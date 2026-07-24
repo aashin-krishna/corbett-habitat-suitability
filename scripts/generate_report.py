@@ -87,10 +87,7 @@ def main():
 **Subject Name:** Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python  
 
 **By:**  
-**Participant Name:** Aashin Krishna A S  
-**Institute Name:** Department of Space Education  
-**Institute Roll No.:** ISA-2026-P6-042  
-**Enrollment No.:** ISA/2026/STP/042  
+**Aashin Krishna A S**  
 
 **Under the Supervision of:**  
 **Miss. Alisha Sinha** (Program Supervisor)  
@@ -620,10 +617,7 @@ The GIS-based Multi-Criteria Decision Analysis (MCDA) effectively mapped wildlif
             <div>
                 <div class="cover-by">By</div>
                 <div class="cover-details">
-                    <strong>Student Name:</strong> Aashin Krishna A S<br>
-                    <strong>Institute Name:</strong> Department of Space Education<br>
-                    <strong>Institute Roll No.:</strong> ISA-2026-P6-042<br>
-                    <strong>Enrollment No.:</strong> ISA/2026/STP/042
+                    <strong style="font-size: 1.25rem; color: #0f172a;">Aashin Krishna A S</strong>
                 </div>
 
                 <div class="cover-supervisor">
@@ -977,8 +971,8 @@ Map.addLayer(terrestrialHSI, {min:1, max:5, palette:['d73027','fc8d59','fee08b',
 
         p_det = doc.add_paragraph()
         p_det.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p_det.add_run("Aashin Krishna A S\nDepartment of Space Education\nInstitute Roll No.: ISA-2026-P6-042\nEnrollment No.: ISA/2026/STP/042\n\nUnder the Supervision of\nMiss. Alisha Sinha\n(Program Supervisor)\n\n\n")
-        run.font.size = Pt(11)
+        run = p_det.add_run("Aashin Krishna A S\n\nUnder the Supervision of\nMiss. Alisha Sinha\n(Program Supervisor)\n\n\n")
+        run.font.size = Pt(12)
 
         if LOGO_PATH.exists():
             p_logo = doc.add_paragraph()

@@ -4,10 +4,7 @@
 **Subject Name:** Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python  
 
 **By:**  
-**Participant Name:** Aashin Krishna A S  
-**Institute Name:** Department of Space Education  
-**Institute Roll No.:** ISA-2026-P6-042  
-**Enrollment No.:** ISA/2026/STP/042  
+**Aashin Krishna A S**  
 
 **Under the Supervision of:**  
 **Miss. Alisha Sinha** (Program Supervisor)  
