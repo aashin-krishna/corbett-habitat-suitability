@@ -408,6 +408,21 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             margin: 15mm;
         }
         
+        @media print {
+            body {
+                padding: 0 !important;
+                background-color: #ffffff !important;
+            }
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+        
         * {
             box-sizing: border-box;
             margin: 0;
@@ -423,13 +438,14 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
         }
         
         .container {
-            max-width: 950px;
+            max-width: 900px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 45px;
+            padding: 35px;
             border-radius: 12px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            overflow: hidden;
         }
 
         /* COVER PAGE STYLING MATCHING OFFICIAL PDF SPECIFICATION */
@@ -584,26 +600,40 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
 
         table {
             width: 100%;
+            max-width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             margin: 25px 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
             border-radius: 8px;
-            overflow: hidden;
+            box-sizing: border-box;
         }
 
         th {
             background-color: var(--primary-dark);
             color: white;
             text-align: left;
-            padding: 12px 16px;
-            font-size: 0.9rem;
+            padding: 10px 12px;
+            font-size: 0.85rem;
             text-transform: uppercase;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         td {
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border);
-            font-size: 0.95rem;
+            font-size: 0.88rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        td a {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
         }
 
         tr:nth-child(even) {
@@ -636,13 +666,24 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
         pre {
             background-color: #0f172a;
             color: #f8fafc;
-            padding: 20px;
-            border-radius: 10px;
-            overflow-x: auto;
-            font-size: 0.82rem;
+            padding: 16px;
+            border-radius: 8px;
+            white-space: pre-wrap !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            font-size: 0.76rem;
             margin: 20px 0;
             line-height: 1.4;
+            box-sizing: border-box;
+            max-width: 100%;
             page-break-inside: avoid;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre-wrap !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
         }
 
         footer {
