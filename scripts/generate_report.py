@@ -7,11 +7,14 @@ BASE_DIR = Path(__file__).parent.parent.resolve()
 OUTPUT_DIR = BASE_DIR / "data" / "processed" / "Output"
 CLEAN_DIR = BASE_DIR / "data" / "processed" / "Cleaned"
 RECLASS_DIR = BASE_DIR / "data" / "processed" / "Reclassified"
-RAW_AOI_DIR = BASE_DIR / "data" / "raw" / "AOI"
+RAW_DIR = BASE_DIR / "data" / "raw"
 
 REPORT_MD_PATH = BASE_DIR / "REPORT.md"
 REPORT_HTML_PATH = BASE_DIR / "REPORT.html"
 REPORT_DOCX_PATH = BASE_DIR / "REPORT.docx"
+REPORT_PDF_PATH = BASE_DIR / "AashinKrishnaAS_P6.pdf"
+
+LOGO_PATH = RAW_DIR / "india_space_academy_logo.png"
 
 COLORS = ["#d73027", "#fc8d59", "#fee08b", "#91cf60", "#1a9850"]
 
@@ -21,6 +24,8 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
     ext = image_path.suffix[1:]
+    if ext.lower() == "jpg":
+        ext = "jpeg"
     return f"data:image/{ext};base64,{encoded_string}"
 
 def read_file_content(path):
@@ -30,7 +35,7 @@ def read_file_content(path):
         return f.read()
 
 def main():
-    print("Generating Standardized Project Report for Project P6...")
+    print("Generating Comprehensive Project Report for Aashin Krishna A S (Project P6)...")
     
     csv_path = OUTPUT_DIR / "Habitat_Suitability_Statistics.csv"
     map_path = OUTPUT_DIR / "Corbett_Habitat_Suitability_Map.png"
@@ -56,6 +61,7 @@ def main():
 
     map_base64 = get_base64_image(map_path)
     chart_base64 = get_base64_image(chart_path)
+    logo_base64 = get_base64_image(LOGO_PATH)
     
     src_dir = BASE_DIR / "src"
     code_preprocessing = read_file_content(src_dir / "preprocessing.py")
@@ -68,7 +74,7 @@ def main():
     # Build Markdown table rows
     md_table_rows = ""
     for r in stats_rows:
-        md_table_rows += f"| **Class {r['Class_Val']} ({r['Suitability_Class']})** | {int(r['Pixel_Count']):,} | {float(r['Area_SqKm']):.2f} | {float(r['Percentage']):.2f}% | Ecological zone |\n"
+        md_table_rows += f"| **Class {r['Class_Val']} ({r['Suitability_Class']})** | {int(r['Pixel_Count']):,} | {float(r['Area_SqKm']):.2f} | {float(r['Percentage']):.2f}% | Land Ecological Zone |\n"
     total_pixels = sum(int(r['Pixel_Count']) for r in stats_rows)
     md_table_rows += f"| **Total Land Area** | **{total_pixels:,}** | **{total_area:.2f}** | **100.00%** | **Excludes 78.03 sq. km water** |\n"
 
@@ -81,7 +87,7 @@ def main():
 **Subject Name:** Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python  
 
 **By:**  
-**Participant Name:** Student Participant  
+**Participant Name:** Aashin Krishna A S  
 **Institute Name:** Department of Space Education  
 **Institute Roll No.:** ISA-2026-P6-042  
 **Enrollment No.:** ISA/2026/STP/042  
@@ -118,20 +124,20 @@ def main():
 ---
 
 ## 2. Objective
-The primary objective of this project is to identify, model, and map suitable habitat or ecological zones for target wildlife species (*Panthera tigris* / Asian Elephant) within **Jim Corbett National Park, Uttarakhand, India**. 
+The primary objective of this project is to model, evaluate, and map ecological habitat suitability for target terrestrial wildlife species—specifically apex carnivores (*Panthera tigris*) and mega-herbivores (Asian Elephant *Elephas maximus*)—within **Jim Corbett National Park, Uttarakhand, India**.
 
-The study integrates multi-source geospatial environmental variables—including vegetation density (NDVI), hydrology (distance to water bodies), land use/land cover (LULC), terrain slope, and elevation—using GIS-based Multi-Criteria Decision Analysis (MCDA) and Weighted Linear Combination (WLC) overlay modeling.
+The study integrates multi-source geospatial environmental variables—including vegetation canopy density (NDVI), hydrological proximity (distance to water bodies), Land Use / Land Cover (LULC), terrain slope, and elevation—using GIS-based Multi-Criteria Decision Analysis (MCDA) and Weighted Linear Combination (WLC) overlay modeling at a 10-meter spatial resolution.
 
 ---
 
 ## 3. Study Area
 - **Region Name:** Jim Corbett National Park
-- **Location:** Nainital & Pauri Garhwal Districts, Uttarakhand, India
+- **State & District:** Uttarakhand (Nainital & Pauri Garhwal Districts), India
 - **Geographic Extent:** 29.40°N to 29.75°N Latitude, 78.75°E to 79.15°E Longitude
 - **Projected Coordinate Reference System:** WGS 84 / UTM Zone 44N (EPSG:32644)
 - **Spatial Resolution:** 10 meters per pixel
 
-Jim Corbett National Park covers an undulating terrain comprising riverine belts, grasslands (Chaurs), and dense Sal (*Shorea robusta*) forests bounded by the Ramganga River.
+Jim Corbett National Park encompasses an area of approximately 1,270 sq. km of land area in the sub-Himalayan belt. The terrain varies from riverine grasslands (Chaurs) along the Ramganga River basin to undulating hills and ridge lines clothed in dense Sal (*Shorea robusta*) forest.
 
 ### Area of Interest (AOI) Map
 ![Habitat Suitability Map](./data/processed/Output/Corbett_Habitat_Suitability_Map.png)
@@ -188,7 +194,32 @@ The methodology integrates spatial multi-criteria decision evaluation across thr
 
 The analysis is fully automated via a modular Python package (`src/`) and `run_pipeline.py`.
 
-#### Core Pipeline Script (`run_pipeline.py`)
+#### 5.2.1 Preprocessing Module (`src/preprocessing.py`)
+```python
+REPLACE_CODE_PREPROCESSING
+```
+
+#### 5.2.2 Distance to Water Module (`src/distance.py`)
+```python
+REPLACE_CODE_DISTANCE
+```
+
+#### 5.2.3 Layer Reclassification Module (`src/reclassification.py`)
+```python
+REPLACE_CODE_RECLASS
+```
+
+#### 5.2.4 Suitability Model Module (`src/suitability.py`)
+```python
+REPLACE_CODE_SUITABILITY
+```
+
+#### 5.2.5 Visualization Module (`src/visualization.py`)
+```python
+REPLACE_CODE_VIZ
+```
+
+#### 5.2.6 Master Pipeline Script (`run_pipeline.py`)
 ```python
 REPLACE_CODE_PIPELINE
 ```
@@ -202,7 +233,7 @@ Below is the complete GEE JavaScript script for replicating the Habitat Suitabil
 ```javascript
 // =================================================================
 // Google Earth Engine (GEE) Script: Habitat Suitability Analysis
-// Project Code: P6
+// Project Code: P6 | Participant: Aashin Krishna A S
 // =================================================================
 
 // 1. Define Area of Interest (AOI)
@@ -284,16 +315,13 @@ Export.image.toDrive({
 
 ## 6. Results
 
-### 6.1 Processed & Reclassified Spatial Rasters
-The multi-criteria analysis evaluated all five environmental variables. Water bodies were masked out to isolate terrestrial habitat suitability.
-
-### 6.2 Habitat Suitability Index (HSI) Map
+### 6.1 Cartographic Habitat Suitability Map
 ![Habitat Suitability Map](./data/processed/Output/Corbett_Habitat_Suitability_Map.png)
 
 ### Area Distribution Chart
 ![Area Statistics Chart](./data/processed/Output/Habitat_Suitability_Statistics_Chart.png)
 
-### 6.3 Land-Based Area Statistics
+### 6.2 Land-Based Area Statistics
 
 | Suitability Class | Pixel Count | Area (sq. km) | Percentage Share (%) | Ecological Characterization |
 | :--- | :---: | :---: | :---: | :--- |
@@ -327,7 +355,14 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
 6. **Rasterio & GeoPandas Contributors (2024)**. *Geospatial Data Processing in Python*. [https://rasterio.readthedocs.io/](https://rasterio.readthedocs.io/)
 """
 
-    md_content = md_content.replace("REPLACE_CODE_PIPELINE", code_pipeline).replace("REPLACE_MD_TABLE_ROWS", md_table_rows)
+    md_content = (md_content
+                  .replace("REPLACE_CODE_PREPROCESSING", code_preprocessing)
+                  .replace("REPLACE_CODE_DISTANCE", code_distance)
+                  .replace("REPLACE_CODE_RECLASS", code_reclass)
+                  .replace("REPLACE_CODE_SUITABILITY", code_suitability)
+                  .replace("REPLACE_CODE_VIZ", code_viz)
+                  .replace("REPLACE_CODE_PIPELINE", code_pipeline)
+                  .replace("REPLACE_MD_TABLE_ROWS", md_table_rows))
 
     with open(REPORT_MD_PATH, "w", encoding="utf-8") as f:
         f.write(md_content)
@@ -354,7 +389,7 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P6 Project Report - India Space Academy</title>
+    <title>P6 Project Report - Aashin Krishna A S - India Space Academy</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -370,7 +405,7 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
         
         @page {
             size: A4;
-            margin: 20mm;
+            margin: 15mm;
         }
         
         * {
@@ -391,46 +426,47 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             max-width: 950px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 50px;
+            padding: 45px;
             border-radius: 12px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
         }
 
-        /* COVER PAGE STYLING MATCHING PDF SPECIFICATION */
+        /* COVER PAGE STYLING MATCHING OFFICIAL PDF SPECIFICATION */
         .cover-page {
-            min-height: 900px;
+            min-height: 980px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             border-bottom: 2px solid var(--border);
             page-break-after: always;
         }
         
         .cover-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             line-height: 1.3;
         }
 
         .cover-subtitle {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #334155;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            line-height: 1.4;
         }
 
         .cover-subject {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--primary-dark);
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .cover-by {
@@ -443,23 +479,20 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             font-size: 1rem;
             color: #334155;
             line-height: 1.8;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .cover-supervisor {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             margin-top: 15px;
         }
 
-        .cover-logo {
-            width: 140px;
-            height: 140px;
-            margin: 20px 0;
-            border-radius: 50%;
-            border: 3px solid var(--primary-dark);
-            padding: 5px;
-            background: #fff;
+        .cover-logo-img {
+            max-width: 170px;
+            max-height: 170px;
+            margin: 15px 0;
+            object-fit: contain;
         }
 
         .cover-footer {
@@ -520,6 +553,10 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             color: var(--text-muted);
         }
 
+        .page-break {
+            page-break-after: always;
+        }
+
         h2 {
             font-family: 'Playfair Display', serif;
             font-size: 1.6rem;
@@ -542,6 +579,7 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             margin-bottom: 15px;
             color: #334155;
             font-size: 1rem;
+            text-align: justify;
         }
 
         table {
@@ -574,11 +612,12 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
 
         .image-container {
             text-align: center;
-            margin: 35px 0;
+            margin: 30px 0;
             border: 1px solid var(--border);
             padding: 15px;
             background-color: #f8fafc;
             border-radius: 12px;
+            page-break-inside: avoid;
         }
 
         .image-container img {
@@ -600,9 +639,10 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             padding: 20px;
             border-radius: 10px;
             overflow-x: auto;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             margin: 20px 0;
             line-height: 1.4;
+            page-break-inside: avoid;
         }
 
         footer {
@@ -629,7 +669,7 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             <div>
                 <div class="cover-by">By</div>
                 <div class="cover-details">
-                    <strong>Student Name:</strong> Student Participant<br>
+                    <strong>Student Name:</strong> Aashin Krishna A S<br>
                     <strong>Institute Name:</strong> Department of Space Education<br>
                     <strong>Institute Roll No.:</strong> ISA-2026-P6-042<br>
                     <strong>Enrollment No.:</strong> ISA/2026/STP/042
@@ -643,12 +683,7 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             </div>
 
             <div>
-                <svg class="cover-logo" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="#0f5c30"/>
-                    <path d="M 20 50 Q 50 10 80 50 Q 50 90 20 50 Z" fill="none" stroke="#ffffff" stroke-width="3"/>
-                    <circle cx="50" cy="50" r="15" fill="#fee08b"/>
-                    <text x="50" y="82" font-size="8" fill="#ffffff" text-anchor="middle" font-weight="bold">INDIA SPACE ACADEMY</text>
-                </svg>
+                <img class="cover-logo-img" src="REPLACE_LOGO_BASE64" alt="India Space Academy Logo">
                 <div class="cover-footer">
                     India Space Academy,<br>
                     Department of Space Education, India<br>
@@ -674,9 +709,9 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
                 </li>
                 <li>6. <a href="#sec6">Results</a>
                     <ul class="toc-sublist">
-                        <li>6.1 Processed & Reclassified Spatial Rasters</li>
-                        <li>6.2 Habitat Suitability Index (HSI) Map</li>
-                        <li>6.3 Land-Based Area Statistics</li>
+                        <li>6.1 Cartographic Habitat Suitability Map</li>
+                        <li>6.2 Area Statistics Chart</li>
+                        <li>6.3 Land-Based Area Statistics Table</li>
                     </ul>
                 </li>
                 <li>7. <a href="#sec7">Conclusion</a></li>
@@ -695,12 +730,14 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
         <section id="sec2">
             <h2>2. Objective</h2>
             <p>
-                The main objective of this study is to model and map ecological habitat suitability for target terrestrial wildlife species (e.g. <em>Panthera tigris</em> / Asian Elephant) inside <strong>Jim Corbett National Park, Uttarakhand, India</strong>.
+                The main objective of this study is to model, evaluate, and map ecological habitat suitability for target terrestrial wildlife species—specifically apex carnivores (<em>Panthera tigris</em>) and mega-herbivores (Asian Elephant <em>Elephas maximus</em>)—within <strong>Jim Corbett National Park, Uttarakhand, India</strong>.
             </p>
             <p>
                 The project integrates multi-spectral satellite imagery, land cover classifications, topographic terrain factors, and hydrological proximity using GIS Multi-Criteria Decision Analysis (MCDA) and Weighted Linear Combination (WLC) overlay modeling at a 10-meter spatial resolution.
             </p>
         </section>
+
+        <div class="page-break"></div>
 
         <!-- SECTION 3 -->
         <section id="sec3">
@@ -709,6 +746,9 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             <p><strong>Location:</strong> Nainital & Pauri Garhwal Districts, Uttarakhand, India</p>
             <p><strong>Coordinate Extent:</strong> 29.40°N to 29.75°N Latitude, 78.75°E to 79.15°E Longitude</p>
             <p><strong>Projection:</strong> WGS 84 / UTM Zone 44N (EPSG:32644)</p>
+            <p>
+                Jim Corbett National Park encompasses an area of approximately 1,270 sq. km of land area in the sub-Himalayan belt. The terrain varies from riverine grasslands (Chaurs) along the Ramganga River basin to undulating hills and ridge lines clothed in dense Sal (<em>Shorea robusta</em>) forest.
+            </p>
             
             <div class="image-container">
                 <img src="REPLACE_MAP_BASE64" alt="Habitat Suitability Map">
@@ -762,6 +802,8 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             </table>
         </section>
 
+        <div class="page-break"></div>
+
         <!-- SECTION 5 -->
         <section id="sec5">
             <h2>5. Methodology</h2>
@@ -769,7 +811,7 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             <h3>5.1 QGIS-Based Workflow</h3>
             <ol style="margin-left: 20px; margin-bottom: 20px;">
                 <li><strong>Data Preparation:</strong> Load AOI vector shapefile and satellite bands into QGIS. Clip rasters using <code>Raster -> Extraction -> Clip Raster by Mask Layer</code>.</li>
-                <li><strong>Thematic Layers:</strong> Calculate NDVI using Raster Calculator: <code>(Band 8 - Band 4) / (Band 8 + Band 4)</code>. Derive Slope from DEM. Extract water bodies and compute proximity raster.</li>
+                <li><strong>Thematic Layers:</strong> Calculate NDVI using Raster Calculator: <code>(Band 8 - Band 4) / (Band 8 + Band 4)</code>. Derive Slope from DEM using <code>Raster -> Analysis -> Slope</code>. Extract water bodies and compute proximity raster.</li>
                 <li><strong>Reclassification:</strong> Standardize continuous variables into scores 1 to 5 (1 = Unsuitable, 5 = Very High Suitability).</li>
                 <li><strong>Weighted Overlay:</strong> Combine layers using Raster Calculator: <code>0.30*NDVI + 0.25*WaterDist + 0.20*LULC + 0.15*Slope + 0.10*Elevation</code>.</li>
                 <li><strong>Classification & Area Stats:</strong> Classify continuous output into 5 categories. Convert raster to polygons using <code>Raster -> Conversion -> Polygonize</code> and calculate area in km².</li>
@@ -777,11 +819,31 @@ The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfu
             </ol>
 
             <h3>5.2 Python-Based Automated Workflow</h3>
-            <p>The workflow is automated using a Python script (<code>run_pipeline.py</code>) and <code>rasterio</code> / <code>geopandas</code> modules:</p>
+            <p>The workflow is automated using modular Python components (<code>src/</code>) and <code>run_pipeline.py</code>:</p>
+            
+            <p><strong>5.2.1 Preprocessing Module (<code>src/preprocessing.py</code>):</strong></p>
+            <pre><code>REPLACE_CODE_PREPROCESSING</code></pre>
+
+            <p><strong>5.2.2 Distance to Water Module (<code>src/distance.py</code>):</strong></p>
+            <pre><code>REPLACE_CODE_DISTANCE</code></pre>
+
+            <p><strong>5.2.3 Layer Reclassification Module (<code>src/reclassification.py</code>):</strong></p>
+            <pre><code>REPLACE_CODE_RECLASS</code></pre>
+
+            <p><strong>5.2.4 Suitability Model Module (<code>src/suitability.py</code>):</strong></p>
+            <pre><code>REPLACE_CODE_SUITABILITY</code></pre>
+
+            <p><strong>5.2.5 Visualization Module (<code>src/visualization.py</code>):</strong></p>
+            <pre><code>REPLACE_CODE_VIZ</code></pre>
+
+            <p><strong>5.2.6 Master Pipeline Script (<code>run_pipeline.py</code>):</strong></p>
             <pre><code>REPLACE_CODE_PIPELINE</code></pre>
 
+            <div class="page-break"></div>
+
             <h3>5.3 Google Earth Engine (GEE) Workflow</h3>
-            <pre><code>// Google Earth Engine (GEE) Script for Project P6
+            <pre><code>// Google Earth Engine (GEE) Script: Habitat Suitability Analysis
+// Project Code: P6 | Participant: Aashin Krishna A S
 var aoi = ee.FeatureCollection("users/yourusername/Corbett_AOI");
 Map.centerObject(aoi, 11);
 
@@ -802,12 +864,16 @@ var waterDist = dw.eq(0).fastDistanceTransform(50).sqrt().multiply(10);
 
 var ndviScore = ndvi.expression("(b('NDVI') > 0.55) ? 5 : (b('NDVI') > 0.45) ? 4 : (b('NDVI') > 0.35) ? 3 : (b('NDVI') > 0.20) ? 2 : 1");
 var slopeScore = slope.expression("(b('slope') <= 5) ? 5 : (b('slope') <= 15) ? 4 : (b('slope') <= 25) ? 3 : (b('slope') <= 35) ? 2 : 1");
+var demScore = dem.expression("(b('elevation') <= 300) ? 5 : (b('elevation') <= 500) ? 4 : (b('elevation') <= 700) ? 3 : (b('elevation') <= 900) ? 2 : 1");
+var lulcScore = dw.remap([0, 1, 2, 3, 4, 5, 6, 7, 8], [3, 5, 4, 3, 2, 4, 1, 1, 1]);
 
-var hsi = ndviScore.multiply(0.30).add(waterScore.multiply(0.25)).add(lulcScore.multiply(0.20)).add(slopeScore.multiply(0.15)).add(demScore.multiply(0.10));
+var hsi = ndviScore.multiply(0.30).add(waterDist.multiply(0.25)).add(lulcScore.multiply(0.20)).add(slopeScore.multiply(0.15)).add(demScore.multiply(0.10));
 var hsiLand = hsi.updateMask(dw.neq(0));
 
 Map.addLayer(hsiLand, {min:1, max:5, palette:['d73027','fc8d59','fee08b','91cf60','1a9850']}, "HSI Map");</code></pre>
         </section>
+
+        <div class="page-break"></div>
 
         <!-- SECTION 6 -->
         <section id="sec6">
@@ -869,21 +935,55 @@ Map.addLayer(hsiLand, {min:1, max:5, palette:['d73027','fc8d59','fee08b','91cf60
         </section>
 
         <footer>
-            <p>India Space Academy &copy; 2026. All Rights Reserved.</p>
+            <p>India Space Academy &copy; 2026. All Rights Reserved. Participant: Aashin Krishna A S</p>
         </footer>
     </div>
 </body>
 </html>
 """
 
-    html_content = html_content.replace("REPLACE_MAP_BASE64", map_base64).replace("REPLACE_CHART_BASE64", chart_base64).replace("REPLACE_CODE_PIPELINE", code_pipeline).replace("REPLACE_TABLE_ROWS_HTML", table_rows_html)
+    html_content = (html_content
+                    .replace("REPLACE_LOGO_BASE64", logo_base64)
+                    .replace("REPLACE_MAP_BASE64", map_base64)
+                    .replace("REPLACE_CHART_BASE64", chart_base64)
+                    .replace("REPLACE_CODE_PREPROCESSING", code_preprocessing)
+                    .replace("REPLACE_CODE_DISTANCE", code_distance)
+                    .replace("REPLACE_CODE_RECLASS", code_reclass)
+                    .replace("REPLACE_CODE_SUITABILITY", code_suitability)
+                    .replace("REPLACE_CODE_VIZ", code_viz)
+                    .replace("REPLACE_CODE_PIPELINE", code_pipeline)
+                    .replace("REPLACE_TABLE_ROWS_HTML", table_rows_html))
 
     with open(REPORT_HTML_PATH, "w", encoding="utf-8") as f:
         f.write(html_content)
     print(f"Standardized HTML report saved to: {REPORT_HTML_PATH}")
 
     # ==========================================
-    # 3. DOCX REPORT GENERATION
+    # 3. PLAYWRIGHT PDF GENERATION
+    # ==========================================
+    try:
+        from playwright.sync_api import sync_playwright
+        print(f"Rendering PDF to {REPORT_PDF_PATH} using Playwright Chromium...")
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page()
+            page.goto(REPORT_HTML_PATH.as_uri(), wait_until="networkidle")
+            page.pdf(
+                path=str(REPORT_PDF_PATH),
+                format="A4",
+                print_background=True,
+                margin={"top": "15mm", "bottom": "15mm", "left": "15mm", "right": "15mm"},
+                display_header_footer=True,
+                header_template='<div style="font-size: 8px; width: 100%; text-align: right; padding-right: 15mm; color: #64748b;">India Space Academy | Project P6 - Aashin Krishna A S</div>',
+                footer_template='<div style="font-size: 8px; width: 100%; text-align: center; color: #64748b;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>'
+            )
+            browser.close()
+        print(f"PDF successfully created at: {REPORT_PDF_PATH}")
+    except Exception as e:
+        print(f"Playwright PDF rendering error: {e}")
+
+    # ==========================================
+    # 4. DOCX REPORT GENERATION
     # ==========================================
     try:
         import docx
@@ -913,26 +1013,31 @@ Map.addLayer(hsiLand, {min:1, max:5, palette:['d73027','fc8d59','fee08b','91cf60
 
         p_det = doc.add_paragraph()
         p_det.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p_det.add_run("Student Participant\nDepartment of Space Education\nInstitute Roll No.: ISA-2026-P6-042\nEnrollment No.: ISA/2026/STP/042\n\nUnder the Supervision of\nMiss. Alisha Sinha\n(Program Supervisor)\n\n\n")
+        run = p_det.add_run("Aashin Krishna A S\nDepartment of Space Education\nInstitute Roll No.: ISA-2026-P6-042\nEnrollment No.: ISA/2026/STP/042\n\nUnder the Supervision of\nMiss. Alisha Sinha\n(Program Supervisor)\n\n\n")
         run.font.size = Pt(11)
+
+        if LOGO_PATH.exists():
+            p_logo = doc.add_paragraph()
+            p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_logo.add_run().add_picture(str(LOGO_PATH), width=Inches(1.8))
 
         p_foot = doc.add_paragraph()
         p_foot.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p_foot.add_run("India Space Academy,\nDepartment of Space Education, India\nSpace Week")
+        run = p_foot.add_run("\nIndia Space Academy,\nDepartment of Space Education, India\nSpace Week")
         run.bold = True
         run.font.size = Pt(13)
 
         doc.add_page_break()
 
         # TOC Header
-        h_toc = doc.add_heading("Table of Contents", level=1)
-        doc.add_paragraph("1. Title\n2. Objective\n3. Study Area\n4. Data Used\n5. Methodology\n   5.1 QGIS-Based Workflow\n   5.2 Python-Based Automated Workflow\n   5.3 Google Earth Engine (GEE) Workflow\n6. Results\n   6.1 Processed Rasters\n   6.2 Habitat Suitability Map\n   6.3 Area Statistics\n7. Conclusion\n8. References")
+        doc.add_heading("Table of Contents", level=1)
+        doc.add_paragraph("1. Title\n2. Objective\n3. Study Area\n4. Data Used\n5. Methodology\n   5.1 QGIS-Based Workflow\n   5.2 Python-Based Automated Workflow\n   5.3 Google Earth Engine (GEE) Workflow\n6. Results\n   6.1 Cartographic Map\n   6.2 Statistics Chart\n   6.3 Area Statistics Table\n7. Conclusion\n8. References")
 
         doc.add_page_break()
 
         # Section 1
         doc.add_heading("1. Title", level=1)
-        doc.add_paragraph("Project Code: P6\nTitle: Habitat or Ecological Suitability Mapping using GIS-Based Weighted Overlay and Environmental Variables")
+        doc.add_paragraph("Project Code: P6\nTitle: Habitat or Ecological Suitability Mapping using GIS-Based Weighted Overlay and Environmental Variables\nParticipant: Aashin Krishna A S")
 
         # Section 2
         doc.add_heading("2. Objective", level=1)
