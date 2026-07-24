@@ -107,7 +107,6 @@ def main():
 5. [Methodology](#5-methodology)
    - [5.1 QGIS-Based Workflow](#51-qgis-based-workflow)
    - [5.2 Python-Based Automated Workflow](#52-python-based-automated-workflow)
-   - [5.3 Google Earth Engine (GEE) Workflow](#53-google-earth-engine-gee-workflow)
 6. [Results](#6-results)
    - [6.1 Processed & Reclassified Rasters](#61-processed--reclassified-rasters)
    - [6.2 Habitat Suitability Index (HSI) Map](#62-habitat-suitability-index-hsi-map)
@@ -150,14 +149,14 @@ Situated within the Shivalik foothill ecosystem, the park encompasses approximat
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Multispectral Satellite** | Sentinel-2 L2A | ESA Copernicus Open Access | [https://scihub.copernicus.eu/](https://scihub.copernicus.eu/) | B02 (Blue), B03 (Green), B04 (Red), B08 (NIR) | Nov 2024 / 10m Spatial |
 | **Topographic Surface** | ALOS PALSAR / SRTM DEM | USGS EarthExplorer Portal | [https://earthexplorer.usgs.gov/](https://earthexplorer.usgs.gov/) | Elevation (m) & Surface Slope (Degrees) | 10m Reprojected |
-| **Land Cover Mapping** | Dynamic World Composite | WRI & Google Earth Engine | [https://dynamicworld.app/](https://dynamicworld.app/) | 9-Class Neural Land Cover Probability | 2024 Median Composite |
+| **Land Cover Mapping** | Dynamic World Composite | WRI & Google | [https://dynamicworld.app/](https://dynamicworld.app/) | 9-Class Neural Land Cover Probability | 2024 Median Composite |
 | **Vector Boundary** | Spatial AOI Shapefile | GADM Administrative Data | [https://gadm.org/](https://gadm.org/) | Polygon Feature (`Corbett_AOI.shp`) | EPSG:32644 Projected |
 
 ---
 
 ## 5. Methodology
 
-The analytical framework executes multi-criteria decision evaluation across three computational environments: **QGIS GIS Platform**, **Python Geospatial Stack**, and **Google Earth Engine (GEE)**.
+The analytical framework executes multi-criteria decision evaluation across two primary computational environments: **QGIS GIS Desktop Platform** and **Python Geospatial Automated Stack**.
 
 ### 5.1 QGIS Desktop Analytical Sequence
 1. **Spatial Boundary Normalization**:
@@ -220,91 +219,6 @@ REPLACE_CODE_VIZ
 #### 5.2.6 Master Orchestration Pipeline (`run_pipeline.py`)
 ```python
 REPLACE_CODE_PIPELINE
-```
-
----
-
-### 5.3 Google Earth Engine (GEE) Cloud Processing Script
-
-The cloud-based JavaScript implementation for Google Earth Engine is structured as follows:
-
-```javascript
-// =================================================================
-// Cloud-Based Habitat Niche Evaluation Script (Google Earth Engine)
-// Study Site: Jim Corbett National Park | Author: Aashin Krishna A S
-// =================================================================
-
-// 1. Initialize Boundary Geometry
-var aoi = ee.FeatureCollection("users/yourusername/Corbett_AOI");
-Map.centerObject(aoi, 11);
-Map.addLayer(aoi, {color: 'black'}, "Corbett Border");
-
-// 2. Process Sentinel-2 Imagery for Canopy Density
-var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
-  .filterBounds(aoi)
-  .filterDate('2024-01-01', '2024-12-31')
-  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 10))
-  .median()
-  .clip(aoi);
-
-var ndvi = s2.normalizedDifference(['B8', 'B4']).rename('NDVI');
-
-// 3. Extract Topographic Slope & Elevation
-var dem = ee.Image("USGS/SRTMGL1_003").clip(aoi);
-var slope = ee.Terrain.slope(dem).rename('Slope');
-
-// 4. Compute Hydrological Proximity Vector
-var dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
-  .filterBounds(aoi)
-  .filterDate('2024-01-01', '2024-12-31')
-  .select('label')
-  .mode()
-  .clip(aoi);
-
-var waterPixels = dw.eq(0);
-var distanceToWater = waterPixels.fastDistanceTransform(50).sqrt().multiply(10).rename('WaterDist');
-
-// 5. Reclassify Input Factors (Scores 1 to 5)
-var ndviScore = ndvi.expression(
-  "(b('NDVI') > 0.55) ? 5 : (b('NDVI') > 0.45) ? 4 : (b('NDVI') > 0.35) ? 3 : (b('NDVI') > 0.20) ? 2 : 1"
-).rename('NDVI_Score');
-
-var slopeScore = slope.expression(
-  "(b('Slope') <= 5) ? 5 : (b('Slope') <= 15) ? 4 : (b('Slope') <= 25) ? 3 : (b('Slope') <= 35) ? 2 : 1"
-).rename('Slope_Score');
-
-var demScore = dem.expression(
-  "(b('elevation') <= 300) ? 5 : (b('elevation') <= 500) ? 4 : (b('elevation') <= 700) ? 3 : (b('elevation') <= 900) ? 2 : 1"
-).rename('DEM_Score');
-
-var waterScore = distanceToWater.expression(
-  "(b('WaterDist') <= 250) ? 5 : (b('WaterDist') <= 500) ? 4 : (b('WaterDist') <= 1000) ? 3 : (b('WaterDist') <= 2000) ? 2 : 1"
-).rename('Water_Score');
-
-var lulcScore = dw.remap([0, 1, 2, 3, 4, 5, 6, 7, 8], [3, 5, 4, 3, 2, 4, 1, 1, 1]).rename('LULC_Score');
-
-// 6. Weighted Linear Combination (WLC)
-var hsi = ndviScore.multiply(0.30)
-  .add(waterScore.multiply(0.25))
-  .add(lulcScore.multiply(0.20))
-  .add(slopeScore.multiply(0.15))
-  .add(demScore.multiply(0.10))
-  .rename('HSI');
-
-// Mask water surface pixels
-var terrestrialHSI = hsi.updateMask(dw.neq(0));
-
-// 7. Render Layer
-Map.addLayer(terrestrialHSI, {min: 1, max: 5, palette: ['d73027', 'fc8d59', 'fee08b', '91cf60', '1a9850']}, "Habitat Suitability");
-
-// 8. Export Output Raster
-Export.image.toDrive({
-  image: terrestrialHSI,
-  description: 'Corbett_HSI_Map',
-  scale: 10,
-  region: aoi,
-  maxPixels: 1e13
-});
 ```
 
 ---
@@ -1081,13 +995,13 @@ Map.addLayer(terrestrialHSI, {min:1, max:5, palette:['d73027','fc8d59','fee08b',
 
         # TOC Header
         doc.add_heading("Table of Contents", level=1)
-        doc.add_paragraph("1. Title\n2. Objective\n3. Study Area\n4. Data Used\n5. Methodology\n   5.1 QGIS-Based Workflow\n   5.2 Python-Based Automated Workflow\n   5.3 Google Earth Engine (GEE) Workflow\n6. Results\n   6.1 Cartographic Map\n   6.2 Statistics Chart\n   6.3 Area Statistics Table\n7. Conclusion\n8. References")
+        doc.add_paragraph("1. Title\n2. Objective\n3. Study Area\n4. Data Used\n5. Methodology\n   5.1 QGIS-Based Workflow\n   5.2 Python-Based Automated Workflow\n6. Results\n   6.1 Cartographic Map\n   6.2 Statistics Chart\n   6.3 Area Statistics Table\n7. Conclusion\n8. References")
 
         doc.add_page_break()
 
         # Section 1
         doc.add_heading("1. Title", level=1)
-        doc.add_paragraph("Project Code: P6\nTitle: Habitat or Ecological Suitability Mapping using GIS-Based Weighted Overlay and Environmental Variables\nParticipant: Aashin Krishna A S")
+        doc.add_paragraph("Project Code: P6\nTitle: Ecological Niche and Habitat Suitability Analysis in Jim Corbett National Park Using Multi-Criteria Decision Evaluation and Spatial Overlay Modeling\nParticipant: Aashin Krishna A S")
 
         # Section 2
         doc.add_heading("2. Objective", level=1)
@@ -1110,9 +1024,6 @@ Map.addLayer(terrestrialHSI, {min:1, max:5, palette:['d73027','fc8d59','fee08b',
         
         doc.add_heading("5.2 Python-Based Automated Workflow", level=2)
         doc.add_paragraph("Automated pipeline utilizing Rasterio, GeoPandas, SciPy, and Matplotlib.")
-
-        doc.add_heading("5.3 Google Earth Engine (GEE) Workflow", level=2)
-        doc.add_paragraph("JavaScript API code for automated cloud-based processing.")
 
         # Section 6
         doc.add_heading("6. Results", level=1)
