@@ -1,7 +1,5 @@
-# Project Code & Title: P6 – Habitat or Ecological Suitability Mapping using GIS-Based Weighted Overlay and Environmental Variables
-
-**Project Report Submitted in fulfillment of the Requirements for the Award of the Internship of Summer Training Program Space Science Technology**  
-**Subject Name:** Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python  
+**Project Report**  
+**Summer Internship**  
 
 **By:**  
 **Aashin Krishna A S**  
@@ -9,7 +7,7 @@
 **Under the Supervision of:**  
 **Miss. Alisha Sinha** (Program Supervisor)  
 
-**India Space Academy, Department of Space Education, India Space Week**  
+**India Space Academy**  
 
 ---
 

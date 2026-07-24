@@ -81,10 +81,8 @@ def main():
     # ==========================================
     # 1. MARKDOWN REPORT
     # ==========================================
-    md_content = """# Project Code & Title: P6 – Habitat or Ecological Suitability Mapping using GIS-Based Weighted Overlay and Environmental Variables
-
-**Project Report Submitted in fulfillment of the Requirements for the Award of the Internship of Summer Training Program Space Science Technology**  
-**Subject Name:** Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python  
+    md_content = """**Project Report**  
+**Summer Internship**  
 
 **By:**  
 **Aashin Krishna A S**  
@@ -92,7 +90,7 @@ def main():
 **Under the Supervision of:**  
 **Miss. Alisha Sinha** (Program Supervisor)  
 
-**India Space Academy, Department of Space Education, India Space Week**  
+**India Space Academy**  
 
 ---
 
@@ -610,14 +608,14 @@ The GIS-based Multi-Criteria Decision Analysis (MCDA) effectively mapped wildlif
         <div class="cover-page">
             <div>
                 <div class="cover-title">Project Code: P6<br>Habitat or Ecological Suitability Mapping using GIS-Based Weighted Overlay and Environmental Variables</div>
-                <div class="cover-subtitle">Project Report Submitted in fulfillment of the Requirements for the Award of the Internship of Summer Training Program Space Science Technology</div>
-                <div class="cover-subject">Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python</div>
+                <div class="cover-subtitle">Project Report</div>
+                <div class="cover-subject">Summer Internship</div>
             </div>
 
             <div>
                 <div class="cover-by">By</div>
                 <div class="cover-details">
-                    <strong style="font-size: 1.25rem; color: #0f172a;">Aashin Krishna A S</strong>
+                    <strong style="font-size: 1.3rem; color: #0f172a;">Aashin Krishna A S</strong>
                 </div>
 
                 <div class="cover-supervisor">
@@ -630,9 +628,7 @@ The GIS-based Multi-Criteria Decision Analysis (MCDA) effectively mapped wildlif
             <div>
                 <img class="cover-logo-img" src="REPLACE_LOGO_BASE64" alt="India Space Academy Logo">
                 <div class="cover-footer">
-                    India Space Academy,<br>
-                    Department of Space Education, India<br>
-                    Space Week
+                    India Space Academy
                 </div>
             </div>
         </div>
@@ -960,14 +956,14 @@ Map.addLayer(terrestrialHSI, {min:1, max:5, palette:['d73027','fc8d59','fee08b',
 
         p_sub = doc.add_paragraph()
         p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p_sub.add_run("Project Report Submitted in fulfillment of the Requirements for the Award of the Internship of Summer Training Program Space Science Technology\n\n")
+        run = p_sub.add_run("Project Report\n\n")
         run.font.size = Pt(12)
 
         p_course = doc.add_paragraph()
         p_course.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p_course.add_run("Summer Internship on Remote Sensing, GIS, Artificial Intelligence, and Python\n\nBy\n\n")
+        run = p_course.add_run("Summer Internship\n\nBy\n\n")
         run.bold = True
-        run.font.size = Pt(13)
+        run.font.size = Pt(14)
 
         p_det = doc.add_paragraph()
         p_det.alignment = WD_ALIGN_PARAGRAPH.CENTER
