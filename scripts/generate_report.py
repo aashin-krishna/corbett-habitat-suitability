@@ -332,7 +332,7 @@ REPLACE_MD_TABLE_ROWS
 ## 7. Conclusion
 
 ### Effectiveness of the Method
-The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfully mapped habitat suitability across Jim Corbett National Park. By integrating high-resolution 10m Sentinel-2 vegetation indices, Dynamic World LULC, and ALOS PALSAR topographic data, the model accurately captured the ecological preferences of megafauna. **58.5%** of the park's land territory provides High to Very High suitability habitat.
+The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfully mapped habitat suitability across Jim Corbett National Park. By integrating high-resolution 10m Sentinel-2 vegetation indices, Dynamic World LULC, and ALOS PALSAR topographic data, the model accurately captured the ecological preferences of megafauna. **43.53%** of the park's land territory provides High to Very High suitability habitat.
 
 ### Limitations
 1. **Model Weight Subjectivity**: Weights assigned to environmental criteria rely on ecological literature and expert consensus.
@@ -917,7 +917,7 @@ Map.addLayer(hsiLand, {min:1, max:5, palette:['d73027','fc8d59','fee08b','91cf60
             <h2>7. Conclusion</h2>
             <p>
                 The GIS-based Weighted Overlay Multi-Criteria Decision Analysis (MCDA) model successfully delineated habitat suitability zones for wildlife across Jim Corbett National Park. 
-                The results demonstrate that <strong>58.5%</strong> of the park's land area offers High or Very High suitability habitat, predominantly along the riverine grasslands and dense Sal forest canopy.
+                The results demonstrate that <strong>43.53%</strong> of the park's land area offers High or Very High suitability habitat, predominantly along the riverine grasslands and dense Sal forest canopy.
             </p>
             <p><strong>Limitations:</strong> Weights rely on ecological literature, and single-date imagery does not reflect dry-season canopy variations.</p>
             <p><strong>Future Improvements:</strong> Incorporate wildlife GPS collar telemetry data and human disturbance buffers.</p>

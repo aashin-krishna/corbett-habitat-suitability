@@ -1136,7 +1136,7 @@ Export.image.toDrive({
 ## 7. Conclusion
 
 ### Effectiveness of the Method
-The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfully mapped habitat suitability across Jim Corbett National Park. By integrating high-resolution 10m Sentinel-2 vegetation indices, Dynamic World LULC, and ALOS PALSAR topographic data, the model accurately captured the ecological preferences of megafauna. **58.5%** of the park's land territory provides High to Very High suitability habitat.
+The Weighted Overlay Multi-Criteria Decision Analysis (MCDA) framework successfully mapped habitat suitability across Jim Corbett National Park. By integrating high-resolution 10m Sentinel-2 vegetation indices, Dynamic World LULC, and ALOS PALSAR topographic data, the model accurately captured the ecological preferences of megafauna. **43.53%** of the park's land territory provides High to Very High suitability habitat.
 
 ### Limitations
 1. **Model Weight Subjectivity**: Weights assigned to environmental criteria rely on ecological literature and expert consensus.
