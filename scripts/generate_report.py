@@ -645,7 +645,6 @@ The GIS-based Multi-Criteria Decision Analysis (MCDA) effectively mapped wildlif
                     <ul class="toc-sublist">
                         <li>5.1 QGIS-Based Workflow</li>
                         <li>5.2 Python-Based Automated Workflow</li>
-                        <li>5.3 Google Earth Engine (GEE) Workflow</li>
                     </ul>
                 </li>
                 <li>6. <a href="#sec6">Results</a>
@@ -735,7 +734,7 @@ The GIS-based Multi-Criteria Decision Analysis (MCDA) effectively mapped wildlif
                     <tr>
                         <td><strong>Land Cover Mapping</strong></td>
                         <td>Dynamic World Composite</td>
-                        <td>WRI & Google Earth Engine</td>
+                        <td>WRI & Google</td>
                         <td><a href="https://dynamicworld.app/">dynamicworld.app</a></td>
                         <td>9-Class Neural Land Cover</td>
                     </tr>
@@ -787,37 +786,6 @@ The GIS-based Multi-Criteria Decision Analysis (MCDA) effectively mapped wildlif
 
             <p><strong>5.2.6 Master Orchestration Pipeline (<code>run_pipeline.py</code>):</strong></p>
             <pre><code>REPLACE_CODE_PIPELINE</code></pre>
-
-            <div class="page-break"></div>
-
-            <h3>5.3 Google Earth Engine (GEE) Cloud Processing Script</h3>
-            <pre><code>// Cloud-Based Habitat Niche Evaluation Script (Google Earth Engine)
-// Study Site: Jim Corbett National Park | Author: Aashin Krishna A S
-var aoi = ee.FeatureCollection("users/yourusername/Corbett_AOI");
-Map.centerObject(aoi, 11);
-
-var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
-  .filterBounds(aoi).filterDate('2024-01-01', '2024-12-31').median().clip(aoi);
-
-var ndvi = s2.normalizedDifference(['B8', 'B4']).rename('NDVI');
-var dem = ee.Image("USGS/SRTMGL1_003").clip(aoi);
-var slope = ee.Terrain.slope(dem);
-
-var dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
-  .filterBounds(aoi).filterDate('2024-01-01', '2024-12-31')
-  .select('label').mode().clip(aoi);
-
-var waterDist = dw.eq(0).fastDistanceTransform(50).sqrt().multiply(10);
-
-var ndviScore = ndvi.expression("(b('NDVI') > 0.55) ? 5 : (b('NDVI') > 0.45) ? 4 : (b('NDVI') > 0.35) ? 3 : (b('NDVI') > 0.20) ? 2 : 1");
-var slopeScore = slope.expression("(b('slope') <= 5) ? 5 : (b('slope') <= 15) ? 4 : (b('slope') <= 25) ? 3 : (b('slope') <= 35) ? 2 : 1");
-var demScore = dem.expression("(b('elevation') <= 300) ? 5 : (b('elevation') <= 500) ? 4 : (b('elevation') <= 700) ? 3 : (b('elevation') <= 900) ? 2 : 1");
-var lulcScore = dw.remap([0, 1, 2, 3, 4, 5, 6, 7, 8], [3, 5, 4, 3, 2, 4, 1, 1, 1]);
-
-var hsi = ndviScore.multiply(0.30).add(waterDist.multiply(0.25)).add(lulcScore.multiply(0.20)).add(slopeScore.multiply(0.15)).add(demScore.multiply(0.10));
-var terrestrialHSI = hsi.updateMask(dw.neq(0));
-
-Map.addLayer(terrestrialHSI, {min:1, max:5, palette:['d73027','fc8d59','fee08b','91cf60','1a9850']}, "HSI Map");</code></pre>
         </section>
 
         <div class="page-break"></div>
