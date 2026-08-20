@@ -7,7 +7,14 @@ supervised by Dr. Ajoy Kumar Bhaumik.
 | File | Purpose |
 |---|---|
 | `Research_Proposal_Report.md` | The report source. Edit this file. |
+| `Research_Proposal_Report.docx` | Word version for submission — 31 pages, A4, title page, contents, numbered sections. |
 | `Research_Proposal_Report.html` | Rendered, print-ready version generated from the Markdown. |
+
+The Word file uses Times New Roman 12 pt at 1.5 line spacing for running text
+and Calibri for headings, with a 1.18 in binding margin on the left. Its
+contents page is a real Word TOC field with the current page numbers already
+cached, so it displays correctly on open; after editing, refresh it with
+Ctrl+A then F9 so the page numbers follow your changes.
 
 ## Source material
 
@@ -41,7 +48,8 @@ validation (Roberts *et al.*, 2017) and compositional data (Aitchison, 1986).
 Verify these against the originals before submission and remove any that the
 department considers outside the intended scope.
 
-## Regenerating the HTML
+## Regenerating the derived files
 
-The HTML is generated from the Markdown; if the Markdown changes, regenerate
-rather than editing the HTML by hand.
+The HTML and DOCX are both generated from the Markdown. If the Markdown
+changes, regenerate them rather than editing either by hand — otherwise the
+three files drift apart.
