@@ -1,0 +1,863 @@
+<title>Cross-Ocean Foraminiferal Reconstruction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --navy:#182D44; --teal:#267373; --teal-2:#269696; --coral:#EF705B;
+  --grey:#697076;
+  --ground:#F1F4F2; --paper:#FFFFFF; --panel:#E8F2F0;
+  --ink:#182D44; --ink-2:#3D5468; --muted:#697076;
+  --rule:#D3DEDB; --rule-soft:#E4EBE9;
+  --accent:var(--teal); --accent-ink:#1E5C5C;
+  --shadow:0 1px 2px rgba(24,45,68,.05), 0 12px 32px -20px rgba(24,45,68,.28);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1720; --paper:#13212B; --panel:#182B33;
+    --ink:#DEE7E6; --ink-2:#B4C4C4; --muted:#8FA0A2;
+    --rule:#283B45; --rule-soft:#1E2F39;
+    --teal:#5FB8B0; --teal-2:#77C9BF; --coral:#F58D7A;
+    --accent:#5FB8B0; --accent-ink:#8AD0C7;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 36px -22px rgba(0,0,0,.75);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1720; --paper:#13212B; --panel:#182B33;
+  --ink:#DEE7E6; --ink-2:#B4C4C4; --muted:#8FA0A2;
+  --rule:#283B45; --rule-soft:#1E2F39;
+  --teal:#5FB8B0; --teal-2:#77C9BF; --coral:#F58D7A;
+  --accent:#5FB8B0; --accent-ink:#8AD0C7;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 36px -22px rgba(0,0,0,.75);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.68;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px; margin:0 auto; padding:0 24px 96px;
+  display:grid; grid-template-columns:1fr; gap:0;}
+
+/* ---------- masthead ---------- */
+header.mast{
+  padding:72px 0 40px; border-bottom:1px solid var(--rule);
+  margin-bottom:0;
+}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--accent);
+  margin:0 0 20px;
+}
+h1{
+  font-family:"Source Sans 3",system-ui,sans-serif;
+  font-weight:700; font-size:clamp(29px,4.4vw,48px); line-height:1.13;
+  letter-spacing:-.018em; margin:0; max-width:24ch; text-wrap:balance;
+  color:var(--ink);
+}
+.mast .sub{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:15px;
+  color:var(--muted); margin:18px 0 0; letter-spacing:.01em;
+}
+.mast .rule{height:3px; width:64px; background:var(--accent); margin:26px 0 0; border-radius:2px}
+
+dl.meta{
+  margin:34px 0 0; padding:0; display:grid; gap:0;
+  grid-template-columns:1fr; max-width:760px;
+  border-top:1px solid var(--rule-soft);
+}
+.mrow{display:grid; grid-template-columns:190px 1fr; gap:16px;
+  padding:9px 0; border-bottom:1px solid var(--rule-soft);}
+dl.meta dt{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  padding-top:4px;
+}
+dl.meta dd{margin:0; font-size:15.5px; color:var(--ink-2)}
+dl.meta dd strong{color:var(--ink)}
+
+/* ---------- layout with rail ---------- */
+.cols{display:grid; grid-template-columns:1fr; gap:0}
+.cols > *{min-width:0}
+@media (min-width:1150px){
+  .cols{grid-template-columns:216px minmax(0,1fr); gap:56px; align-items:start}
+}
+nav.rail{display:none}
+@media (min-width:1150px){
+  nav.rail{
+    display:block; position:sticky; top:0; padding:56px 0 40px;
+    max-height:100vh; overflow-y:auto;
+  }
+  nav.rail .rlabel{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
+    margin:0 0 14px; padding-bottom:10px; border-bottom:1px solid var(--rule);
+  }
+  nav.rail ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+  nav.rail a{
+    display:grid; grid-template-columns:22px 1fr; gap:6px; align-items:baseline;
+    font-family:"Source Sans 3",system-ui,sans-serif; font-size:13.5px;
+    color:var(--muted); text-decoration:none; padding:6px 8px 6px 0;
+    border-left:2px solid transparent; padding-left:10px; line-height:1.35;
+    transition:color .15s, border-color .15s;
+  }
+  nav.rail a:hover{color:var(--ink)}
+  nav.rail a.active{color:var(--accent); border-left-color:var(--accent); font-weight:600}
+  nav.rail .tnum2{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+    color:var(--accent); opacity:.75;
+  }
+}
+
+/* ---------- article ---------- */
+article{max-width:72ch; padding-top:8px; min-width:0}
+section.sec{padding:52px 0 8px; border-top:1px solid var(--rule-soft)}
+section.sec:first-of-type{border-top:none}
+h2{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-weight:700;
+  font-size:clamp(22px,2.7vw,30px); letter-spacing:-.012em; line-height:1.22;
+  margin:0 0 30px; display:grid; grid-template-columns:auto 1fr; gap:14px;
+  align-items:baseline; text-wrap:balance; color:var(--ink);
+}
+h2 .secnum{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:500;
+  font-size:.62em; color:var(--accent);
+  border-bottom:2px solid var(--accent); padding-bottom:2px;
+}
+h3{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-weight:600;
+  font-size:18.5px; letter-spacing:-.004em; line-height:1.35;
+  margin:40px 0 12px; color:var(--ink); text-wrap:balance;
+}
+h3 .subnum{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:400;
+  font-size:13px; color:var(--accent); margin-right:10px;
+}
+p{margin:0 0 17px}
+article > section > p:first-of-type{margin-top:0}
+strong{font-weight:600; color:var(--ink)}
+em{font-style:italic}
+a{color:var(--accent-ink); text-decoration:underline; text-underline-offset:2px;
+  text-decoration-thickness:1px; text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+a:focus-visible, nav.rail a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+
+ul,ol{margin:0 0 18px; padding-left:1.3em}
+li{margin:0 0 8px}
+li::marker{color:var(--accent)}
+
+/* research-gap lead paragraphs */
+p.gap{
+  border-left:3px solid var(--coral); padding:2px 0 2px 18px;
+  margin-left:-1px;
+}
+p.gap strong{color:var(--ink)}
+
+/* research questions */
+strong.rq{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.86em;
+  color:var(--coral); font-weight:500; letter-spacing:.02em;
+}
+
+/* objectives */
+.obj{
+  background:var(--paper); border:1px solid var(--rule);
+  border-left:3px solid var(--accent);
+  border-radius:3px; padding:16px 20px; margin:0 0 12px; box-shadow:var(--shadow);
+}
+.obj p{margin:0; font-size:16px; line-height:1.6}
+.objlabel{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  margin:0 0 7px !important; font-weight:500;
+}
+.obj p strong{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-weight:600;
+  font-size:15.5px; color:var(--ink);
+}
+
+/* ---------- workflow ---------- */
+figure.flow{
+  margin:26px 0 30px; padding:26px 22px 20px; background:var(--paper);
+  border:1px solid var(--rule); border-radius:4px; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:0;
+}
+.stage{
+  display:grid; grid-template-columns:34px 1fr; gap:14px; align-items:start;
+  padding:11px 12px; border:1px solid var(--rule-soft); border-radius:3px;
+  background:var(--ground);
+}
+.stage + .stage{margin-top:22px; position:relative}
+.stage + .stage::before{
+  content:""; position:absolute; left:29px; top:-19px; width:2px; height:16px;
+  background:var(--rule); border-radius:1px;
+}
+.stage + .stage::after{
+  content:""; position:absolute; left:26px; top:-6px;
+  border-left:4px solid transparent; border-right:4px solid transparent;
+  border-top:5px solid var(--rule);
+}
+.stage.key{border-color:var(--accent); background:var(--panel)}
+.stage.key .stagenum{background:var(--accent); color:var(--paper); border-color:var(--accent)}
+.stagenum{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; font-weight:500;
+  width:26px; height:26px; display:grid; place-items:center; border-radius:50%;
+  border:1px solid var(--rule); color:var(--accent); background:var(--paper);
+}
+.stagehead{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-weight:600; font-size:15px;
+  line-height:1.3; color:var(--ink);
+}
+.ref{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px;
+  color:var(--muted); margin-left:9px; font-weight:400; letter-spacing:.03em;
+}
+.stagesub{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+  color:var(--muted); margin-top:4px; line-height:1.5;
+}
+figure.flow figcaption{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:13px; color:var(--muted);
+  margin-top:20px; padding-top:14px; border-top:1px solid var(--rule-soft);
+}
+
+/* ---------- tables ---------- */
+p.tcap{
+  font-family:"Source Sans 3",system-ui,sans-serif; font-size:14px;
+  color:var(--ink-2); margin:34px 0 10px; font-weight:600;
+}
+.tnum{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent);
+  margin-right:10px; font-weight:500;
+}
+.tw{overflow-x:auto; margin:0 0 24px; border:1px solid var(--rule);
+  border-radius:4px; background:var(--paper); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; font-size:14px;
+  font-family:"Source Sans 3",system-ui,sans-serif; font-variant-numeric:tabular-nums}
+th{
+  text-align:left; font-weight:600; font-size:11.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); background:var(--panel);
+  padding:11px 14px; border-bottom:1px solid var(--rule); white-space:nowrap;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+}
+td{padding:11px 14px; border-bottom:1px solid var(--rule-soft); vertical-align:top;
+  line-height:1.5; color:var(--ink-2)}
+tr:last-child td{border-bottom:none}
+td strong{color:var(--ink)}
+td:has(> .gx){padding-left:3px; padding-right:3px}
+.tw table td:first-child{min-width:178px}
+
+/* gantt */
+.gx{display:inline-block; width:100%; min-width:22px; height:9px; border-radius:2px}
+.gx.on{background:var(--accent)}
+.gx.soft{background:color-mix(in srgb,var(--accent) 26%,transparent)}
+.gx.off{background:var(--rule-soft); height:2px; opacity:.65}
+p.legend{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+  color:var(--muted); display:flex; align-items:center; gap:7px; flex-wrap:wrap;
+  margin:-14px 0 26px;
+}
+p.legend .gx{width:22px; min-width:22px}
+.lgap{width:18px; display:inline-block}
+
+/* ---------- references ---------- */
+#sec-8 p{
+  font-size:15px; padding-left:1.6em; text-indent:-1.6em; margin-bottom:12px;
+  color:var(--ink-2); line-height:1.55;
+}
+#sec-8 p em{color:var(--ink)}
+
+footer.foot{
+  margin-top:60px; padding-top:22px; border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px;
+  color:var(--muted); letter-spacing:.03em;
+}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 18px 64px}
+  header.mast{padding:44px 0 30px}
+  .mrow{grid-template-columns:1fr; gap:2px; padding:10px 0}
+  section.sec{padding:40px 0 8px}
+  h2{grid-template-columns:1fr; gap:6px}
+}
+
+@media print{
+  :root{--ground:#fff; --paper:#fff; --panel:#f2f5f4}
+  body{font-size:11pt}
+  nav.rail, footer.foot{display:none}
+  .cols{grid-template-columns:1fr}
+  section.sec{break-inside:auto; page-break-inside:auto}
+  h2,h3{break-after:avoid; page-break-after:avoid}
+  .tw,figure.flow,.obj{break-inside:avoid; page-break-inside:avoid; box-shadow:none}
+  a{color:inherit; text-decoration:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <p class="eyebrow">Research Proposal · Micropalaeontology × Machine Learning</p>
+    <h1>Machine Learning-Based Reconstruction and Cross-Ocean Validation of Missing Planktonic Foraminiferal Abundance Data</h1>
+    <div class="rule"></div>
+    <p class="sub">Can machine learning rebuild the gaps in published foraminiferal records — and does that accuracy survive a move to a different ocean basin?</p>
+    <dl class="meta">
+<div class="mrow"><dt>Candidate</dt><dd>R. Ranjith Kumar (Roll No. 22JE0757)</dd></div>
+<div class="mrow"><dt>Supervisor</dt><dd>Dr. Ajoy Kumar Bhaumik</dd></div>
+<div class="mrow"><dt>Research area</dt><dd>Micropalaeontology · Palaeoceanography · Machine Learning</dd></div>
+<div class="mrow"><dt>Study interval</dt><dd>approximately 0–7 Ma, subject to dataset availability</dd></div>
+<div class="mrow"><dt>Training data</dt><dd>published, openly licensed PANGAEA foraminiferal records</dd></div>
+<div class="mrow"><dt>External test data</dt><dd>independent Atlantic and Indian Ocean datasets supplied by the supervisor</dd></div>
+<div class="mrow"><dt>Proposed duration</dt><dd>8 months (August – March)</dd></div>
+    </dl>
+  </header>
+
+  <div class="cols">
+    <nav class="rail" aria-label="Contents">
+      <p class="rlabel">Contents</p>
+      <ol>
+<li><a href="#sec-1"><span class="tnum2">1</span>Introduction</a></li>
+<li><a href="#sec-2"><span class="tnum2">2</span>Literature Survey</a></li>
+<li><a href="#sec-3"><span class="tnum2">3</span>Research Gap</a></li>
+<li><a href="#sec-4"><span class="tnum2">4</span>Problem Statement</a></li>
+<li><a href="#sec-5"><span class="tnum2">5</span>Objectives</a></li>
+<li><a href="#sec-6"><span class="tnum2">6</span>Methodology</a></li>
+<li><a href="#sec-7"><span class="tnum2">7</span>Timeline</a></li>
+<li><a href="#sec-8"><span class="tnum2">8</span>References</a></li>
+      </ol>
+    </nav>
+
+    <article>
+<section class="sec" id="sec-1"><h2><span class="secnum" aria-hidden="true">1</span><span class="sectitle">Introduction</span></h2>
+<h3><span class="subnum">1.1</span>Background</h3>
+<p>Deep-sea sediments accumulate slowly and more or less continuously, and in doing so they preserve one of the few archives from which the state of the ocean before the instrumental era can be reconstructed quantitatively. Among the fossils contained in these sediments, foraminifera are the most widely used. They are unicellular marine protists that secrete a calcareous test, and they occur in two ecologically distinct groups: planktonic species, which live in the upper water column, and benthic species, which live at or within the sea floor. Because the tests of both groups are preserved in sediment in large numbers and can be identified to species level, a single sediment core yields a stratigraphically ordered sequence of quantitative biological census data (Hemleben, Spindler and Anderson, 1989).</p>
+<p>The palaeoceanographic value of planktonic foraminifera follows from their ecology. The distribution of individual species in the modern ocean is governed by sea-surface temperature, water-column stratification, salinity and nutrient supply, so the <em>composition</em> of a fossil assemblage — the relative proportion of each species in a sample — carries information about the surface conditions under which that assemblage lived. This principle is the basis of quantitative palaeoceanography: assemblage census counts are converted into estimates of past surface conditions using transfer functions and analogue techniques, an approach introduced by Imbrie and Kipp (1971) and refined extensively since (Kučera, 2007). Benthic foraminiferal assemblages, usually analysed together with stable carbon and oxygen isotope measurements on their tests, are used in a parallel way to infer deep-water mass properties and ventilation.</p>
+<p>The practical output of this work is highly standardised in form. A micropalaeontological study of a core produces a table in which each row is a sediment sample, identified by depth below sea floor and, where an age model exists, by numerical age; and each column is a species, an isotopic parameter, or a derived index. The entries are counts, relative abundances (percentages of the counted assemblage) or concentrations. Because several hundred specimens are conventionally identified per sample from a standard size fraction, a single record commonly contains thousands of individual numerical observations distributed across tens of species.</p>
+<p>Over the past two decades these tables have become openly available rather than remaining in appendices. PANGAEA, the Data Publisher for Earth and Environmental Science, archives such datasets with persistent DOIs, machine-readable parameter definitions and site metadata (Diepenbroek <em>et al.</em>, 2002). This has changed how micropalaeontological data can be used: records produced for one study at one site can, in principle, be pooled across sites and re-analysed at a scale that no single laboratory could generate. The scientific relevance of the present proposal begins here. The analyses that these records exist to support — time-series and spectral analysis of abundance variation, ordination of assemblages, calibration of transfer functions, and multi-site synthesis — all assume a numerically complete data matrix. Where the matrix is incomplete, the analysis cannot simply proceed with the gaps left in place.</p>
+<h3><span class="subnum">1.2</span>Research context</h3>
+<p>The material of this study is the population of published, openly licensed tabular foraminiferal records held on PANGAEA, with a training base drawn from the western North Atlantic and an external test set drawn from independent Atlantic and Indian Ocean sites.</p>
+<p>A representative and well-documented example is the record of Nishi, Norris and Okada (2000), which reports relative abundances of planktonic foraminifera from ODP Hole 164-997A on the Blake Ridge (31.84° N, 75.47° W; 2,770 m water depth). The dataset comprises 56 parameters covering 51 species across 91 samples — approximately 5,005 individual data points — and spans the latest Pliocene to Holocene (approximately the last 2.15 Ma). Its structure is typical of the class of data this research addresses: wide (many species columns), short (fewer than a hundred samples), and unevenly populated, because most species are not present, or not reported, in every sample. Complementary records from the same broad region extend the available material both in time and in parameter type. Bhaumik, Gupta and Thomas (2011) published a benthic foraminiferal and stable carbon isotope record from the Blake Outer Ridge covering approximately the last 7 Ma; Lutz (2011) published planktonic foraminiferal data from ODP Hole 172-1063A on the Blake–Bahama Outer Ridge; and Chaisson, Poli and Thunell (2002) published stable isotope data together with planktonic foraminiferal composition from ODP Site 172-1056. Together these constitute a compatible set of western North Atlantic records that share a broad geographic setting and a common data model, while differing in site, water depth, time span and the specific parameters reported.</p>
+<p>Three characteristics of this material define the technical problem. First, the records are <em>heterogeneous</em>: taxonomic nomenclature, units (counts, percentages, concentrations), age conventions (ka or Ma, and different underlying timescales), size fractions and missing-value conventions differ between authors, so records cannot be concatenated without deliberate harmonisation. Second, they are <em>sparse in a structured way</em>: an empty cell may mean that the species was genuinely absent from the counted assemblage, that it was present but not distinguished by that author, that it fell below a reporting threshold, or that the sample was not analysed for that parameter at all. These are different conditions with different implications, and they are frequently encoded identically. Third, they are <em>small</em>: a few tens to a few hundred samples per site is normal, which places the problem firmly in the small-to-medium tabular data regime rather than the large-sample regime in which most modern machine-learning practice is developed.</p>
+<p>Current practice for handling incomplete micropalaeontological tables is largely informal. Samples containing missing entries are deleted from the analysis, gaps are filled by linear interpolation along the depth or age axis, or absent entries are set to zero on the assumption that they represent true absences. General-purpose statistical imputation methods exist and are mature — multiple imputation by chained equations (van Buuren and Groothuis-Oudshoorn, 2011) and random-forest imputation (Stekhoven and Bühlmann, 2012) are standard in other data-intensive disciplines — but they are seldom applied to, and have not been systematically evaluated on, published foraminiferal census data.</p>
+<p>In parallel, machine learning has entered micropalaeontology decisively, but along a different route. Johansen and Sørensen (2020) demonstrated transfer-learning-based detection and classification of foraminifera from microscope images; Johansen <em>et al.</em> (2021) extended this to instance segmentation; and Karaderi <em>et al.</em> (2021) showed that deep metric learning can classify planktic foraminifera and encode morphological similarity. This body of work targets the <em>acquisition</em> stage of the workflow — turning specimens into identifications — and demonstrates convincingly that learned models can handle foraminiferal data. It does not address the <em>tabular</em> records that acquisition produces, and it does not address what happens to those records once they are published with gaps in them.</p>
+<h3><span class="subnum">1.3</span>Motivation</h3>
+<p>The position can be stated as a short progression. It is established that planktonic foraminiferal assemblages carry quantitative information about past ocean conditions, and that a large volume of such data is openly published in a reusable tabular form. It is also established that machine-learning models can perform demanding recognition tasks on foraminiferal material, and, separately, that supervised regression and imputation methods perform well on tabular data in other fields.</p>
+<p>What follows from this combination is not yet established. The tabular records are treated as raw source data to be read, not as training material from which the statistical structure of an assemblage might be learned; the informal gap-filling procedures actually used are not benchmarked against each other or against alternatives; and, most consequentially, there is no evidence about whether a model that reconstructs missing values well within the dataset it was trained on continues to do so on a core it has never seen. This last point matters more in geoscience than in most application domains, because samples from a single core are autocorrelated in time, share a single analyst, laboratory protocol and size fraction, and reflect one regional oceanographic setting. A model evaluated by randomly holding out rows from such a dataset is being asked an easy question, and may return an optimistic answer that does not survive contact with a new site or a new ocean basin.</p>
+<p>The need, therefore, is for a controlled and honestly validated assessment: whether missing quantitative observations in published foraminiferal records can be reconstructed accurately enough to be scientifically usable, how that accuracy behaves as the amount of missing data increases, which algorithms are dependable at this data scale, and whether performance transfers to genuinely independent records. This proposal addresses that need. Its formal statement of the research gap is developed in Section 3, after the relevant literature has been examined.</p>
+<hr />
+</section>
+<section class="sec" id="sec-2"><h2><span class="secnum" aria-hidden="true">2</span><span class="sectitle">Literature Survey</span></h2>
+<p>The literature relevant to this proposal falls into four connected bodies of work: the palaeoceanographic framework that gives foraminiferal abundance data their meaning; the published tabular datasets that constitute the empirical material; computational and machine-learning approaches applied so far in micropalaeontology; and the wider methodological literature on missing data and on validating models built from spatially structured data. Each is examined below in terms of what was done, what was found, what is useful for the present work, and what limitation remains.</p>
+<h3><span class="subnum">2.1</span>Planktonic foraminifera as palaeoceanographic proxies: the scientific framework</h3>
+<p>The interpretative framework for foraminiferal census data was established by work linking assemblage composition to surface-ocean conditions. Imbrie and Kipp (1971) formalised the transfer-function approach, in which a statistical relationship is calibrated between modern assemblage composition and modern hydrographic variables and then applied to fossil assemblages to reconstruct past conditions. Subsequent decades of ecological and taxonomic work, synthesised by Hemleben, Spindler and Anderson (1989) and reviewed in a palaeoceanographic context by Kučera (2007), established the biological basis for that relationship: species have distinct depth habitats, temperature tolerances and seasonal preferences, and assemblage composition therefore varies systematically along oceanographic gradients.</p>
+<p>Two consequences of this framework are directly useful here. First, a fossil assemblage is not a random collection of independent species counts; it is a structured, internally correlated object in which species co-occur in predictable combinations. That internal structure is precisely what a supervised model could learn in order to estimate an unobserved abundance from the observed remainder of the same assemblage. Second, the framework establishes the standard against which any reconstruction must be judged. The purpose of these data is quantitative environmental inference, so a reconstruction is adequate only if the reconstructed record supports the same inference as the complete record would — a stricter criterion than minimising an error metric.</p>
+<p>The limitation of this body of work, from the present perspective, is that it assumes complete assemblage data as its starting point. It specifies what the data mean, but offers no procedure for what to do when part of the assemblage matrix is absent.</p>
+<h3><span class="subnum">2.2</span>Published tabular abundance and isotope datasets: the empirical evidence base</h3>
+<p>A substantial body of published, openly licensed records provides the material for this study. Nishi, Norris and Okada (2000) reported planktonic foraminiferal relative abundances from ODP Hole 164-997A on the Blake Ridge, a compact record of 51 species across 91 samples spanning the latest Pliocene to Holocene. Lutz (2011) published a compatible planktonic foraminiferal dataset from ODP Hole 172-1063A on the Blake–Bahama Outer Ridge. Bhaumik, Gupta and Thomas (2011) reported benthic foraminiferal assemblages together with stable carbon isotope data from the Blake Outer Ridge across approximately the last 7 Ma, demonstrating the palaeoceanographic value of long, continuous records for tracking deep-water conditions. Chaisson, Poli and Thunell (2002) contributed stable isotope measurements and planktonic foraminiferal composition from ODP Site 172-1056, adding a further western North Atlantic record in which assemblage and geochemical parameters occur together in the same table.</p>
+<p>Collectively these studies establish that rich, openly published abundance, age and isotope records exist across multiple North Atlantic sites, that they are consistent enough in structure to be considered jointly, and that they cover a time span compatible with the approximately 0–7 Ma interval of interest. They also establish, in the case of Bhaumik, Gupta and Thomas (2011) and Chaisson, Poli and Thunell (2002), that geochemical parameters are available alongside assemblage data in at least some records, which is relevant to the construction of predictor variables.</p>
+<p>The limitation these studies share is one of use rather than of quality. In the subsequent literature they function as raw source data — cited, read, and interpreted — but they have not been treated as training material from which the statistical structure of foraminiferal assemblages might be learned, nor has the incompleteness of their data matrices been treated as a problem worth solving systematically. The datasets themselves are the evidence that the gap identified in Section 3 exists in practice and not merely in principle.</p>
+<h3><span class="subnum">2.3</span>Computational and machine-learning approaches in micropalaeontology</h3>
+<p>Machine learning has been applied to foraminifera with clear success, but on a consistent class of problems. Johansen and Sørensen (2020) applied transfer learning to microscope images of foraminifera, showing that pre-trained convolutional networks can detect and classify specimens without the very large annotated datasets such models normally require. Johansen <em>et al.</em> (2021) advanced this to instance segmentation, separating individual specimens within an image and delineating their outlines, which is the harder task required for automated counting. Karaderi <em>et al.</em> (2021) took a different approach, using deep metric learning to embed specimen images in a similarity space, thereby classifying planktic foraminifera while also representing morphological relationships between taxa rather than only assigning discrete labels.</p>
+<p>What this work found is that the identification bottleneck in micropalaeontology is tractable by machine learning, and that models can capture morphological information at a level useful for taxonomy. What it contributes here is both practical and rhetorical: it establishes methodological precedent for machine learning in this discipline, and it identifies image-based specimen recognition as the settled frontier of that effort.</p>
+<p>Its limitation, stated plainly, is that all of it operates upstream of the tabular record. These methods generate or replicate identifications; they take no position on the completeness, consistency or reusability of the abundance tables that identifications eventually become. Once a record is published with missing entries, none of these approaches offers any means of addressing them.</p>
+<h3><span class="subnum">2.4</span>Missing-data treatment and validation design for structured tabular data</h3>
+<p>The statistical treatment of missing data is a mature field with a formal foundation. Rubin (1976) established the classification of missingness mechanisms — missing completely at random (MCAR), missing at random (MAR) and missing not at random (MNAR) — and showed that the validity of any imputation depends on which mechanism applies; Little and Rubin (2019) provide the standard modern treatment. Two practical methods dominate application: multiple imputation by chained equations (van Buuren and Groothuis-Oudshoorn, 2011), which models each incomplete variable conditionally on the others, and random-forest imputation (Stekhoven and Bühlmann, 2012), which is non-parametric, handles mixed data types and performs well without distributional assumptions. On the supervised side, the algorithms proposed for this study are all well characterised: random forests (Breiman, 2001) are robust with limited sample sizes and yield interpretable variable importances; support vector regression (Smola and Schölkopf, 2004) is effective when the number of predictors is large relative to the number of samples; and regularised gradient boosting as implemented in XGBoost (Chen and Guestrin, 2016) is a consistently strong performer on tabular problems.</p>
+<p>A second and equally important methodological literature concerns how such models should be evaluated when the data are not independent. Roberts <em>et al.</em> (2017) showed that for data with temporal, spatial or hierarchical structure, random cross-validation systematically overestimates predictive performance, because training and test partitions drawn at random share the very dependence structure the model is credited with having learned; they recommend blocked or grouped validation schemes in which whole spatial or temporal units are held out. This finding is directly applicable to foraminiferal records, which are simultaneously time series (samples ordered by depth and age within a core) and spatially grouped (samples clustered within sites and basins, sharing analytical practice).</p>
+<p>A further consideration specific to this data type is that relative abundances are compositional: the species proportions within a sample are constrained to a constant sum. Aitchison (1986) established that such data violate the assumptions of standard multivariate statistics, and that predicting one component without regard to the constraint can produce results that are numerically reasonable but internally inconsistent.</p>
+<p>The limitation of this literature is that it is generic. It specifies the correct framework, the appropriate algorithms and the correct validation design, but it has not been instantiated on published micropalaeontological census data, whose particular combination of small sample size, high dimensionality, zero-inflation, compositional closure and ambiguous missing-value coding is not represented in the datasets on which these methods are normally demonstrated.</p>
+<h3><span class="subnum">2.5</span>Recent developments and synthesis</h3>
+<p>The most recent contributions in this space — Johansen and Sørensen (2020), Johansen <em>et al.</em> (2021) and Karaderi <em>et al.</em> (2021) — confirm that the current direction of travel in AI-assisted micropalaeontology is towards richer image-based analysis: from classification to segmentation to learned morphological similarity. Over the same period, the tabular data holdings on PANGAEA have continued to grow, with records such as those of Lutz (2011) and Bhaumik, Gupta and Thomas (2011) added as openly citable datasets. Methodologically, the recognition that spatially and temporally structured data require blocked validation (Roberts <em>et al.</em>, 2017) has become established practice in ecological and environmental modelling.</p>
+<p>These three developments have not yet been brought together. The image-based work does not extend to the tabular records; the growing tabular archive is not being used as training material; and the validation standard now expected in adjacent environmental disciplines has not been applied to reconstruction of micropalaeontological data, because no such reconstruction has been systematically attempted. The gap that follows from this synthesis is set out in Section 3.</p>
+<hr />
+</section>
+<section class="sec" id="sec-3"><h2><span class="secnum" aria-hidden="true">3</span><span class="sectitle">Research Gap</span></h2>
+<h3><span class="subnum">3.1</span>What is already established</h3>
+<p>The literature supports four secure statements. Planktonic foraminiferal assemblage composition is an internally structured, environmentally controlled quantity from which past surface-ocean conditions can be inferred (Imbrie and Kipp, 1971; Kučera, 2007). Extensive tabular records of that composition, together with associated age, depth and stable isotope parameters, are openly published, citable and technically reusable (Nishi, Norris and Okada, 2000; Chaisson, Poli and Thunell, 2002; Bhaumik, Gupta and Thomas, 2011; Lutz, 2011). Machine learning is demonstrably capable on foraminiferal material, at least for image-based recognition tasks (Johansen and Sørensen, 2020; Johansen <em>et al.</em>, 2021; Karaderi <em>et al.</em>, 2021). And the statistical machinery required to model and impute incomplete tabular data, together with the validation designs appropriate to spatially structured data, is mature and well documented (Rubin, 1976; Breiman, 2001; Smola and Schölkopf, 2004; Chen and Guestrin, 2016; Roberts <em>et al.</em>, 2017; Little and Rubin, 2019).</p>
+<h3><span class="subnum">3.2</span>What remains unresolved</h3>
+<p class="gap"><strong>(i) A methodological gap: reconstruction of tabular records has not been attempted.</strong> Existing artificial-intelligence work on foraminifera is directed at images — detection, classification and segmentation of specimens (Johansen and Sørensen, 2020; Johansen <em>et al.</em>, 2021; Karaderi <em>et al.</em>, 2021). No comparable effort addresses missing quantitative values in the tabular records that specimen identification produces. The consequence is that the informal procedures actually used to close gaps in published records — listwise deletion, linear interpolation, zero substitution — remain unbenchmarked: their error characteristics are unknown, and there is no evidence as to whether a model that exploits the correlation structure of an assemblage would do better or worse. The unresolved question is whether the internal statistical structure of a foraminiferal assemblage is strong enough to support quantitative reconstruction of an unobserved abundance at all.</p>
+<p class="gap"><strong>(ii) An application gap: the published archive is not used as training material.</strong> The PANGAEA records identified in Section 2.2 are extensive, harmonisable and openly licensed, and they are routinely used as data sources for interpretation. They have not been used as training data for reconstruction. The consequence is that a growing body of openly published quantitative micropalaeontological data remains under-exploited, and that gaps in legacy records continue to be resolved by discarding samples — an approach that removes real observations in order to compensate for absent ones, and that becomes increasingly costly as more records are combined in multi-site syntheses. The unresolved question is whether a model trained across several published records can recover values well enough to restore those records to analysable, continuous form.</p>
+<p class="gap"><strong>(iii) A generalisation gap: performance under random hold-out has not been tested against spatially independent validation.</strong> Where predictive models are built on geoscientific data, the standard evaluation is a random train–test split. Roberts <em>et al.</em> (2017) established that this is systematically optimistic for data with temporal, spatial or hierarchical structure — exactly the structure of core-based micropalaeontological records, in which adjacent samples are autocorrelated and all samples from a site share an analyst, a laboratory protocol, a size fraction and a regional oceanographic setting. The consequence is that a reconstruction model reported as accurate under random hold-out could nonetheless fail on a core from a different site or ocean basin, and the failure would be invisible in the reported metrics. The unresolved question is how large the difference between random-split and site- or basin-level performance actually is for this class of data, and therefore whether reconstruction is transferable or only ever site-specific.</p>
+<h3><span class="subnum">3.3</span>Statement of the central research gap</h3>
+<p>No study has established whether missing quantitative observations in published tabular planktonic foraminiferal records can be reconstructed by machine learning to a scientifically usable accuracy, how that accuracy depends on the proportion of missing data and on the choice of algorithm, or — critically — whether performance measured by random hold-out within a training dataset is retained when the model is applied to genuinely independent cores from other ocean basins.</p>
+<hr />
+</section>
+<section class="sec" id="sec-4"><h2><span class="secnum" aria-hidden="true">4</span><span class="sectitle">Problem Statement</span></h2>
+<p>Published micropalaeontological and palaeoceanographic datasets on PANGAEA frequently contain missing quantitative observations. This incompleteness is a substantive obstacle rather than a formatting inconvenience, because the analyses these records support — continuous time-series analysis, assemblage ordination, transfer-function calibration and multi-site synthesis — require numerically complete matrices. The procedures currently used to resolve the problem either discard information or impose assumptions about the shape of the missing data that have never been tested against known values.</p>
+<p>The limitation in current knowledge is twofold. First, it is not established that the correlation structure within and between foraminiferal records is sufficient to support quantitative reconstruction of a withheld abundance value, nor which class of model does so most reliably at the sample sizes typical of these datasets. Second, and more consequentially for the credibility of any such method, it is not established that reconstruction performance measured on randomly withheld rows of a training dataset carries over to an independent core, because the standard random-split evaluation is optimistic for data that are autocorrelated in depth and grouped by site.</p>
+<p>This matters because the value of a reconstruction method lies entirely in its application to records the model has not seen. A method validated only on random hold-outs would appear successful while offering no assurance that a reconstructed value in a new core is meaningful — and reconstructed values, once inserted into a published record, propagate into every downstream palaeoceanographic interpretation drawn from it.</p>
+<p>What must therefore be investigated is whether machine learning can reconstruct missing planktonic foraminiferal observations accurately enough to be scientifically usable, and whether that accuracy holds when the model is tested on genuinely independent ocean-basin data. Three research questions follow directly:</p>
+<ul>
+<li><strong class="rq">RQ1.</strong> How accurately can machine-learning models reconstruct missing planktonic foraminiferal abundance values, and how does accuracy degrade as the proportion of missing data increases from 10 % to 40 %?</li>
+<li><strong class="rq">RQ2.</strong> Which algorithm performs most reliably for this task on the small-to-medium tabular datasets characteristic of published geological records?</li>
+<li><strong class="rq">RQ3.</strong> Does performance measured under random hold-out transfer to genuinely independent, cross-ocean datasets?</li>
+</ul>
+<hr />
+</section>
+<section class="sec" id="sec-5"><h2><span class="secnum" aria-hidden="true">5</span><span class="sectitle">Objectives</span></h2>
+<p>The overall aim of this research is to develop and externally validate a machine-learning workflow that reconstructs missing planktonic foraminiferal abundance data from published records, and to establish whether that workflow generalises across independent ocean basins. Four specific objectives follow.</p>
+<div class="obj"><p class="objlabel">Objective 1</p><p><strong>To compile and harmonise a reproducible, machine-learning-ready dataset</strong> from published PANGAEA planktonic and benthic foraminiferal records, resolving inconsistencies in species nomenclature, measurement units, age conventions, sampling metadata and missing-value coding.</p></div>
+<div class="obj"><p class="objlabel">Objective 2</p><p><strong>To develop and benchmark machine-learning regression and imputation models</strong> — linear regression as a baseline, random forest, support vector regression and XGBoost — under controlled missing-data scenarios of 10 %, 20 %, 30 % and 40 %, evaluated using MAE, RMSE and R².</p></div>
+<div class="obj"><p class="objlabel">Objective 3</p><p><strong>To evaluate model generalisation</strong> by directly comparing performance under random hold-out validation against performance under site- and ocean-based external validation, and to quantify the difference between them.</p></div>
+<div class="obj"><p class="objlabel">Objective 4</p><p><strong>To test the final model on independent Indian Ocean and Atlantic Ocean datasets</strong> and to interpret the results in a palaeoceanographic context, identifying the conditions under which reconstruction is reliable and those under which it is not.</p></div>
+<p class="tcap"><span class="tnum">Table 1</span>Traceability of research gap, objectives, methodology and expected outcome</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Gap component (§3.2)</th>
+<th>Objective</th>
+<th>Methodology section</th>
+<th>Expected outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(ii) Application gap</td>
+<td>O1: Compile and harmonise</td>
+<td>6.1, 6.2, 6.3</td>
+<td>Documented, reproducible ML-ready dataset and taxonomic lookup table</td>
+</tr>
+<tr>
+<td>(i) Methodological gap</td>
+<td>O2: Develop and benchmark models</td>
+<td>6.4, 6.5, 6.6</td>
+<td>Comparative benchmark of model accuracy against missingness rate</td>
+</tr>
+<tr>
+<td>(iii) Generalisation gap</td>
+<td>O3: Compare validation regimes</td>
+<td>6.7</td>
+<td>Quantified difference between random and spatially blocked validation</td>
+</tr>
+<tr>
+<td>(iii) Generalisation gap + interpretation</td>
+<td>O4: External test and interpretation</td>
+<td>6.7, 6.8, 6.9</td>
+<td>Cross-basin transfer assessment and palaeoceanographic interpretation</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+</section>
+<section class="sec" id="sec-6"><h2><span class="secnum" aria-hidden="true">6</span><span class="sectitle">Methodology</span></h2>
+<h3>Workflow overview</h3>
+<figure class="flow" role="group" aria-label="Proposed research workflow, nine stages">
+<div class="stage ">
+      <div class="stagenum">1</div>
+      <div class="stagebody"><div class="stagehead">Dataset discovery &amp; acquisition<span class="ref">§6.1</span></div>
+      <div class="stagesub">PANGAEA records, ~0–7 Ma · external test sets quarantined</div></div>
+    </div>
+<div class="stage ">
+      <div class="stagenum">2</div>
+      <div class="stagebody"><div class="stagehead">Harmonisation &amp; quality control<span class="ref">§6.2</span></div>
+      <div class="stagesub">species names · units · age scales · missing-value semantics</div></div>
+    </div>
+<div class="stage ">
+      <div class="stagenum">3</div>
+      <div class="stagebody"><div class="stagehead">Exploratory &amp; micropalaeontological analysis<span class="ref">§6.3</span></div>
+      <div class="stagesub">distributions · correlation · missingness structure</div></div>
+    </div>
+<div class="stage ">
+      <div class="stagenum">4</div>
+      <div class="stagebody"><div class="stagehead">Target &amp; predictor preparation<span class="ref">§6.4</span></div>
+      <div class="stagesub">assemblage · stratigraphic · geographic predictors</div></div>
+    </div>
+<div class="stage key">
+      <div class="stagenum">5</div>
+      <div class="stagebody"><div class="stagehead">Controlled missing-data masking<span class="ref">§6.5</span></div>
+      <div class="stagesub">10 % · 20 % · 30 % · 40 % withheld, repeated</div></div>
+    </div>
+<div class="stage ">
+      <div class="stagenum">6</div>
+      <div class="stagebody"><div class="stagehead">Model development<span class="ref">§6.6</span></div>
+      <div class="stagesub">baseline · linear regression · RF · SVR · XGBoost</div></div>
+    </div>
+<div class="stage key">
+      <div class="stagenum">7</div>
+      <div class="stagebody"><div class="stagehead">Dual validation + external test<span class="ref">§6.7</span></div>
+      <div class="stagesub">random hold-out │ site &amp; basin hold-out │ unseen basins</div></div>
+    </div>
+<div class="stage ">
+      <div class="stagenum">8</div>
+      <div class="stagebody"><div class="stagehead">Interpretation<span class="ref">§6.8</span></div>
+      <div class="stagesub">feature importance · error structure · geological meaning</div></div>
+    </div>
+<div class="stage ">
+      <div class="stagenum">9</div>
+      <div class="stagebody"><div class="stagehead">Final outputs<span class="ref">§6.9</span></div>
+      <div class="stagesub">dataset · code · benchmark · reconstructed records</div></div>
+    </div>
+<figcaption>Stages 5 and 7 carry the methodological novelty of the study.</figcaption></figure>
+<p>Stages 5 and 7 carry the methodological novelty of the study and are treated in correspondingly greater detail below.</p>
+<h3><span class="subnum">6.1</span>Data acquisition</h3>
+<p><strong>Sources.</strong> All training data will be obtained from PANGAEA, using parameter- and keyword-based searches for planktonic and benthic foraminiferal abundance records associated with ODP and DSDP holes, filtered to the approximate interval 0–7 Ma. The four records identified in the literature survey form the initial core of the compilation: Nishi, Norris and Okada (2000), Chaisson, Poli and Thunell (2002), Bhaumik, Gupta and Thomas (2011) and Lutz (2011). Additional records will be added where they satisfy the inclusion criteria below, with the search documented so that the compilation is reproducible.</p>
+<p><strong>Inclusion criteria.</strong> A dataset will be admitted if it provides (i) quantitative species-level abundance data or compatible quantitative parameters, rather than qualitative presence/absence; (ii) sample-level depth below sea floor and, where available, numerical age; (iii) documented site metadata including latitude, longitude and water depth; and (iv) an open licence and a citable DOI.</p>
+<p><strong>External test data.</strong> Independent Indian Ocean and Atlantic Ocean datasets supplied by the supervisor will be reserved as an entirely unseen external test set. These data will not be inspected, summarised or used in any development decision until model development is complete and frozen. This provides two levels of externality: the independent Atlantic dataset tests transfer to a new site within a broadly familiar basin, while the Indian Ocean dataset tests transfer to a different ocean basin altogether.</p>
+<p><strong>Scope condition.</strong> Availability of the supervisor-supplied external datasets is a stated dependency of this proposal rather than an assumption. Should they prove unavailable or unsuitable, Objective 4 will be addressed using a substitute external test constructed from PANGAEA records held out at the site level from the outset and quarantined under the same conditions. This preserves the logic of external validation, although with a smaller geographic contrast, and the reduced scope would be reported explicitly.</p>
+<p><strong>Expected format.</strong> PANGAEA records are distributed as tab-delimited text files with a structured metadata header. Each will be parsed into a table of samples (rows) against parameters (columns), with the metadata header retained as record-level provenance.</p>
+<h3><span class="subnum">6.2</span>Data preparation and pre-processing</h3>
+<p>Because the compilation draws on records produced independently by different authors, harmonisation is not a preliminary formality but a substantive component of the work, and it is the step on which the validity of everything downstream depends.</p>
+<p><strong>Provenance retention.</strong> Dataset DOI, site, hole, latitude, longitude and water depth will be attached to every sample as explicit fields. These are required later to define grouped validation partitions, and losing them during concatenation would make spatially blocked validation impossible.</p>
+<p><strong>Taxonomic harmonisation.</strong> Species names will be reconciled to a single accepted list, resolving synonyms, abbreviations and differences in the level of taxonomic splitting between authors. Open nomenclature (<code>cf.</code>, <code>aff.</code>, <code>sp.</code>) and grouped taxa (for example, colour varieties reported jointly by one author and separately by another) will be handled by an explicit rule: where one record splits a taxon that another lumps, the split categories will be summed to the coarser common level, so that comparability is achieved by deliberate loss of resolution rather than by silent mismatch. Every mapping decision will be recorded in a version-controlled lookup table published with the dataset.</p>
+<p><strong>Unit and age harmonisation.</strong> Counts, relative abundances and concentrations will be converted to a common quantitative basis, with the original unit retained as a field. Ages reported in ka and Ma will be converted to a single numeric scale, and both stratigraphic depth and age will be retained, since depth defines within-core ordering while age permits cross-core comparison.</p>
+<p><strong>Missing-value semantics.</strong> Empty cells will be classified, as far as the source documentation allows, into (a) true absence from the counted assemblage, which is a structural zero and a valid observation; (b) not reported or not distinguished by that author; (c) below a stated counting or reporting threshold; and (d) parameter not measured for that sample. Only categories (b)–(d) constitute missing data for the purposes of this study. Conflating category (a) with the others would systematically corrupt both the training targets and the evaluation, and separating them is therefore treated as a quality-control requirement rather than a refinement.</p>
+<p><strong>Quality control.</strong> Checks will include duplicate sample detection, physically impossible values (negative abundances, percentages exceeding 100), row-sum closure checks on relative abundance data, monotonicity of depth and age within each core, and screening for outliers that indicate transcription errors rather than genuine variation.</p>
+<p><strong>Scaling.</strong> Predictors will be standardised for scale-sensitive learners (linear regression, support vector regression); tree-based models require no scaling, and scaling parameters will be fitted on training partitions only, never on the full dataset, to prevent information leakage.</p>
+<p><strong>Data structures.</strong> Two representations will be maintained: a long-format tidy table (one row per sample–parameter observation) for provenance and filtering, and a wide sample × species matrix for modelling.</p>
+<h3><span class="subnum">6.3</span>Exploratory and micropalaeontological analysis</h3>
+<p>This stage characterises the data as a geological object before any model is fitted, and its findings determine several modelling decisions.</p>
+<p><strong>Distributional structure.</strong> Species abundance distributions will be examined for zero-inflation and right-skew, both of which are expected in assemblage data where most species are rare and a few dominate. The proportion of samples in which each species is reported will determine which taxa have sufficient coverage to serve as modelling targets.</p>
+<p><strong>Missingness structure.</strong> Missingness will be quantified per species, per sample and per site, and its pattern examined for systematic structure — in particular, whether the probability that a value is missing is related to the magnitude of that value. If rare taxa are systematically less often reported, real missingness is not missing at random in Rubin's (1976) sense, and this has direct consequences for how the masking experiment (Section 6.5) should be interpreted. This diagnosis will be made explicitly rather than assumed.</p>
+<p><strong>Assemblage structure.</strong> Correlation between species abundances, and between abundances and stratigraphic or geochemical parameters, will be examined, and ordination (principal component or correspondence analysis) used to identify the dominant assemblage gradients. This establishes whether the internal structure that reconstruction depends upon is in fact present and how strong it is. Diversity and dominance indices will be computed per sample as summary descriptors.</p>
+<p><strong>Between-site comparability.</strong> Assemblage composition will be compared between sites to assess how similar the training records are to one another. This is directly relevant to Objective 3: if the sites are compositionally near-identical, a site-level hold-out is a weaker test than it appears; if they differ substantially, cross-site transfer is a demanding test and results should be interpreted accordingly.</p>
+<p><strong>Stratigraphic continuity.</strong> Sample spacing, temporal resolution and the presence of hiatuses will be documented per record, since these govern how informative neighbouring samples are and therefore how strong an interpolation baseline can be expected to be.</p>
+<h3><span class="subnum">6.4</span>Target and predictor variable preparation</h3>
+<p><strong>Target variables.</strong> The primary targets are the relative abundances of planktonic foraminiferal species that are reported with sufficient coverage across multiple sites to permit training and evaluation. Where the harmonised dataset supports it, other compatible quantitative variables may also be treated as targets. Species with very sparse coverage will be excluded from the target set but retained as predictors, since they still carry assemblage information.</p>
+<p><strong>Predictor variables.</strong> For a given target, predictors will comprise: the abundances of the other species recorded in the same sample, which express assemblage context; stratigraphic variables (depth below sea floor, numerical age); site-level geographic variables (latitude, longitude, water depth); and, where available in the same record, stable isotope parameters, which are present in the datasets of Chaisson, Poli and Thunell (2002) and Bhaumik, Gupta and Thomas (2011). Where isotope data are not reported in the same table as the assemblage data, the feature set will be restricted to assemblage, stratigraphic and geographic variables rather than joined speculatively across records.</p>
+<p><strong>Derived features.</strong> A small number of interpretable sample-level descriptors will be derived: assemblage diversity, dominance, and the number of taxa reported. No ecological grouping of species beyond that supported by published sources will be imposed.</p>
+<p><strong>Transformations.</strong> Because relative abundances are proportions bounded between 0 and 1 and are typically right-skewed, a logit or arcsine-square-root transformation will be evaluated for the target variable, with predictions back-transformed before error metrics are computed so that errors are reported in the original units.</p>
+<p><strong>Compositional constraint.</strong> Relative abundances within a sample are subject to constant-sum closure (Aitchison, 1986). Predicting a single component independently can therefore yield a value that is individually plausible but inconsistent with the remainder of the assemblage. Two treatments will be compared: direct prediction with a post-hoc consistency check on the reconstructed sample total, and prediction in a log-ratio transformed space that respects the closure constraint. Whichever is adopted, the closure diagnostic will be reported alongside the standard error metrics.</p>
+<p><strong>Site identity.</strong> The site identifier will be used strictly as a grouping key for validation and never as a predictor, to prevent the model from learning site membership directly. Because latitude, longitude and water depth can encode site identity implicitly, two model variants will be trained — one including geographic predictors and one excluding them — and their relative transfer performance compared. This distinguishes a model that has learned assemblage structure from one that has learned where each core is.</p>
+<h3><span class="subnum">6.5</span>Controlled missing-data experiment design</h3>
+<p>The core experimental design creates missing values whose true values are known, so that reconstruction error can be measured directly.</p>
+<p><strong>Reference matrix.</strong> A densely observed sub-matrix will be extracted from the harmonised dataset — samples and species with high reporting coverage — to serve as ground truth. All masking is applied to this complete reference, so that every prediction can be compared with an observed value.</p>
+<p><strong>Primary scenario (MCAR).</strong> Values will be withheld completely at random at four rates: 10 %, 20 %, 30 % and 40 %. Each rate will be repeated over multiple random seeds (of the order of twenty), and results reported as mean and standard deviation across repetitions, so that the reported degradation curve reflects a distribution rather than a single draw.</p>
+<p><strong>Secondary scenarios.</strong> Two additional masking regimes will be run at the same rates to test whether conclusions drawn under MCAR are robust to more realistic missingness. In the first, values are withheld with a probability that increases as abundance decreases, approximating the tendency of rare taxa to go unreported (an MNAR-like condition). In the second, contiguous stratigraphic intervals are masked as blocks, mimicking the way real gaps occur in cores and removing the assistance that immediately adjacent samples would otherwise provide. These scenarios are secondary to the primary MCAR design and are reported separately.</p>
+<h3><span class="subnum">6.6</span>Model development</h3>
+<p>Four model families will be trained on identical inputs and evaluated under identical conditions, together with baselines that represent current practice.</p>
+<p><strong>Baselines.</strong> Two baselines establish the standard that a machine-learning model must beat to be worth adopting: (a) column mean or median substitution, and (b) linear interpolation along the depth or age axis within each core, which is the informal procedure most commonly used in practice. A model that fails to outperform stratigraphic interpolation has no practical claim, and reporting this comparison is essential to an honest benchmark.</p>
+<p><strong>Statistical reference model.</strong> Multiple linear regression provides a transparent, low-variance reference and indicates how much of the reconstruction problem is linear.</p>
+<p><strong>Machine-learning models.</strong>
+- <em>Random forest</em> (Breiman, 2001): an ensemble of decision trees that captures non-linear relationships and interactions, is comparatively robust at small sample sizes, and yields variable-importance measures that support the interpretation stage.
+- <em>Support vector regression</em> (Smola and Schölkopf, 2004): effective where the number of predictors approaches or exceeds the number of samples, as is typical of wide, short assemblage matrices; requires standardised inputs and careful tuning of the kernel, the regularisation parameter and the insensitivity margin.
+- <em>XGBoost</em> (Chen and Guestrin, 2016): regularised gradient boosting, a consistently strong performer on tabular data and able to exploit weaker predictor–target relationships than a random forest of comparable size.</p>
+<p><strong>Established imputation comparators.</strong> Because the task is formally an imputation problem, iterative imputation methods will be included as comparators — chained-equations imputation (van Buuren and Groothuis-Oudshoorn, 2011) and random-forest imputation (Stekhoven and Bühlmann, 2012) — so that any advantage claimed for the supervised approach is measured against the established alternatives rather than only against naive baselines.</p>
+<p><strong>Hyperparameter optimisation.</strong> Hyperparameters will be selected by grid or randomised search using grouped cross-validation <em>within the training partition only</em>, with sites as groups. Search spaces will cover, for the random forest, the number of trees, maximum depth and minimum samples per leaf; for support vector regression, kernel choice and the regularisation and margin parameters; and for XGBoost, learning rate, tree depth, subsampling fraction and regularisation terms. Under no circumstances will the test partitions influence model or hyperparameter selection.</p>
+<p><strong>Implementation.</strong> The workflow will be implemented in Python using pandas, scikit-learn (Pedregosa <em>et al.</em>, 2011) and XGBoost, with fixed random seeds, pinned package versions and version-controlled scripts, so that every reported result can be regenerated from the published dataset.</p>
+<h3><span class="subnum">6.7</span>Validation</h3>
+<p>Validation is the component that distinguishes this study from a conventional benchmarking exercise, and the partitions are therefore defined explicitly.</p>
+<p><strong>Partition definitions.</strong>
+- <strong>Training data</strong> — samples used to fit model parameters.
+- <strong>Validation data</strong> — samples used to select hyperparameters and make development decisions, drawn from the training pool using <code>GroupKFold</code> with site as the grouping variable, so that no site appears in both fitting and selection folds.
+- <strong>Test data</strong> — samples used once, after development is frozen, to estimate generalisation. Three test regimes are applied.</p>
+<p><strong>Test regime A — random hold-out.</strong> Rows are withheld at random from the pooled training dataset. This reproduces standard practice and serves as the optimistic reference point, not as the headline result.</p>
+<p><strong>Test regime B — site and basin hold-out.</strong> Whole sites are withheld in a leave-one-site-out design, and where the compilation permits, whole basins. This is the scientifically meaningful test, because the intended application is a core the model has never seen.</p>
+<p><strong>Test regime C — external test.</strong> The supervisor-supplied Indian Ocean and Atlantic datasets, quarantined throughout development, are evaluated once. Repeating this evaluation after further tuning would convert it into a validation set and destroy its status as an unbiased estimate; it will therefore be run once, and the result reported whatever it shows.</p>
+<p><strong>Why spatial independence matters.</strong> Samples within a core are autocorrelated in depth and time, and share an analyst, a laboratory protocol, a size fraction and a single regional oceanographic setting. Under random splitting, a withheld sample almost always has near-neighbours from the same core in the training set, so the model can succeed by exploiting local continuity rather than any transferable relationship — an optimism that is well documented for spatially and temporally structured data (Roberts <em>et al.</em>, 2017). Grouped hold-out removes that assistance and measures what the model has actually learned about assemblage structure.</p>
+<p><strong>Evaluation metrics.</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Definition</th>
+<th>What it captures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAE</td>
+<td>Mean absolute error between predicted and withheld values</td>
+<td>Typical error magnitude, in original abundance units; robust to outliers</td>
+</tr>
+<tr>
+<td>RMSE</td>
+<td>Root mean squared error</td>
+<td>Error magnitude with additional weight on large errors</td>
+</tr>
+<tr>
+<td>R²</td>
+<td>Proportion of variance in withheld values explained</td>
+<td>Whether the model outperforms predicting the mean</td>
+</tr>
+<tr>
+<td>Bias</td>
+<td>Mean signed error</td>
+<td>Systematic over- or under-prediction, invisible to MAE and RMSE</td>
+</tr>
+<tr>
+<td>Skill score</td>
+<td>Relative improvement in RMSE over the interpolation baseline</td>
+<td>Whether the model beats current practice</td>
+</tr>
+</tbody>
+</table></div>
+<p>Metrics will be reported for each model, at each missingness rate, under each test regime, with dispersion across repetitions and folds. Errors will additionally be stratified by abundance class, since a low average error dominated by abundant species may conceal poor performance on rare taxa.</p>
+<p><strong>The generalisation gap.</strong> The difference in each metric between test regime A and test regimes B and C is the quantity that answers RQ3 and Objective 3, and it will be reported as a primary result rather than as a supplementary observation.</p>
+<p><strong>Leakage control.</strong> Train, validation and test separations are made at the site or dataset level throughout. All preprocessing steps that learn from data — scaling parameters, transformation parameters, feature selection, imputation of predictors — are fitted within training folds and applied to held-out data, never fitted on the pooled dataset.</p>
+<h3><span class="subnum">6.8</span>Interpretation</h3>
+<p>Model output is treated as evidence to be interpreted, not as a result in itself.</p>
+<p><strong>Feature importance and attribution.</strong> Impurity-based and permutation importances will be computed for the tree-based models, supplemented by Shapley-value attribution (Lundberg and Lee, 2017) for individual predictions. The question asked of these results is geological: does the model rely on co-occurring species within the same assemblage, which would indicate that it has learned ecologically coherent structure, or on stratigraphic position and geographic coordinates, which would indicate that it has learned where and when each sample came from? The comparison between the geography-inclusive and geography-free model variants (Section 6.4) provides a direct test of this distinction.</p>
+<p><strong>Error structure.</strong> Errors will be analysed by species abundance class, by stratigraphic interval and by site. Reconstruction is expected to be least reliable for rare and low-abundance taxa, where the signal-to-noise ratio in the counted assemblage is lowest, and this expectation will be tested rather than assumed. Intervals with elevated error will be examined against documented features of the record — hiatuses, changes in sample spacing, preservation quality — so that error is explained rather than merely reported.</p>
+<p><strong>Effect on downstream inference.</strong> Because the problem statement asks whether reconstruction is accurate enough to be <em>scientifically usable</em>, error metrics alone are insufficient. Summary quantities of palaeoceanographic interest — assemblage diversity curves, dominant ordination axes, abundance time series of key taxa — will be computed from the complete reference record and again from the masked-and-reconstructed record, and compared. This determines whether reconstruction preserves the geological signal at the level at which it is actually interpreted.</p>
+<p><strong>Uncertainty.</strong> Prediction uncertainty will be characterised through the spread of ensemble predictions and through the distribution of errors across masking repetitions, and reported alongside every reconstructed value. Where the external test indicates poor transfer, this will be stated as a finding about the limits of the method rather than attributed to properties of the test data.</p>
+<p><strong>Palaeoceanographic framing.</strong> Results will be interpreted against the established understanding of assemblage–environment relationships summarised in Section 2.1, and against the characteristics of the source records, so that conclusions about where reconstruction succeeds are expressed in terms of the geology and not only in terms of the algorithm.</p>
+<h3><span class="subnum">6.9</span>Final outputs</h3>
+<ol>
+<li><strong>A harmonised, documented, machine-learning-ready dataset</strong> compiled from published PANGAEA records, released with the taxonomic and unit lookup tables and full provenance to each source DOI (Objective 1).</li>
+<li><strong>A reproducible code repository</strong> containing the harmonisation, masking, modelling and validation pipeline, with pinned dependencies and fixed seeds (Objectives 1–4).</li>
+<li><strong>A comparative benchmark</strong> presented as tables and degradation curves of MAE, RMSE and R² against missingness rate for each model and each test regime, identifying which algorithms are dependable on small-to-medium geological tabular data (Objective 2).</li>
+<li><strong>A quantified generalisation assessment</strong>, contrasting random hold-out with site- and basin-level validation and with the unseen external test, expressed as the generalisation gap for each model (Objectives 3 and 4).</li>
+<li><strong>Reconstructed abundance series</strong> for the study records, each accompanied by an uncertainty estimate and a flag distinguishing observed from reconstructed values.</li>
+<li><strong>Practical recommendations</strong>, stating the conditions — missingness rate, taxon abundance, degree of geographic extrapolation — under which reconstruction of legacy foraminiferal records can be considered scientifically usable, and the conditions under which it should not be attempted.</li>
+<li><strong>A thesis</strong> and a manuscript prepared for submission.</li>
+</ol>
+<h3><span class="subnum">6.10</span>Scope conditions, assumptions and risk management</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Condition or risk</th>
+<th>Consequence if unaddressed</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Availability of supervisor-supplied external datasets</td>
+<td>Objective 4 cannot be completed as specified</td>
+<td>Substitute external test from site-level quarantined PANGAEA records; reduced geographic contrast reported explicitly (§6.1)</td>
+</tr>
+<tr>
+<td>Small sample size per record</td>
+<td>Unstable estimates, over-fitting</td>
+<td>Repeated masking with multiple seeds; grouped cross-validation; preference for regularised and ensemble models; dispersion reported with every metric</td>
+</tr>
+<tr>
+<td>Real missingness may be MNAR while masking is MCAR</td>
+<td>Benchmark optimistic relative to real-world use</td>
+<td>Abundance-dependent and block masking scenarios (§6.5); missingness mechanism diagnosed in EDA (§6.3)</td>
+</tr>
+<tr>
+<td>Compositional closure of relative abundances</td>
+<td>Internally inconsistent reconstructions</td>
+<td>Log-ratio-space modelling and closure diagnostics (§6.4)</td>
+</tr>
+<tr>
+<td>Subjectivity in taxonomic harmonisation</td>
+<td>Non-reproducible dataset; hidden systematic error</td>
+<td>Published lookup table, lumping-to-coarser-level rule, version control (§6.2)</td>
+</tr>
+<tr>
+<td>Structural zeros conflated with missing values</td>
+<td>Corrupted training targets and misleading metrics</td>
+<td>Explicit missing-value semantics classification (§6.2)</td>
+</tr>
+</tbody>
+</table></div>
+<h3><span class="subnum">6.11</span>Expected outcomes and research significance</h3>
+<p>The expected outcome is a reproducible machine-learning workflow for reconstructing missing quantitative foraminiferal observations from published PANGAEA data, together with a comparative benchmark identifying which approaches are most reliable at this data scale, and a generalisation assessment stronger than random train–test splitting alone can provide. The contribution is intended to be dual: a practical data-analysis method that increases the usability of an existing open archive, and a geological assessment of where such reconstruction can be trusted and where uncertainty remains. It is emphasised that these are anticipated outcomes of the proposed work; no performance level is claimed in advance, and a finding that reconstruction does not transfer across basins would itself be a substantive and reportable result.</p>
+<hr />
+</section>
+<section class="sec" id="sec-7"><h2><span class="secnum" aria-hidden="true">7</span><span class="sectitle">Timeline</span></h2>
+<p>The proposed programme runs over eight months, from August to March. Phases overlap where the work genuinely permits it: interpretation continues alongside the early stages of writing, and literature review is maintained at low intensity throughout rather than being closed after Month 2. The two most demanding phases — model development and the validation programme — are allocated the largest contiguous blocks, reflecting the fact that the masking experiment must be repeated across four missingness rates, multiple seeds, three masking regimes and several model families.</p>
+<p class="tcap"><span class="tnum">Table 2</span>Research schedule</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Activity</th>
+<th style="text-align: center;">Aug</th>
+<th style="text-align: center;">Sep</th>
+<th style="text-align: center;">Oct</th>
+<th style="text-align: center;">Nov</th>
+<th style="text-align: center;">Dec</th>
+<th style="text-align: center;">Jan</th>
+<th style="text-align: center;">Feb</th>
+<th style="text-align: center;">Mar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Literature review and topic finalisation</td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+</tr>
+<tr>
+<td>PANGAEA dataset search and download</td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+</tr>
+<tr>
+<td>Data cleaning and harmonisation</td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+</tr>
+<tr>
+<td>Exploratory analysis and missing-data masking</td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+</tr>
+<tr>
+<td>Machine-learning model development</td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+</tr>
+<tr>
+<td>Validation and external test</td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+</tr>
+<tr>
+<td>Geological interpretation</td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+</tr>
+<tr>
+<td>Thesis writing and revision</td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx off"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx soft" title="secondary activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+<td style="text-align: center;"><span class="gx on" title="principal activity"></span></td>
+</tr>
+</tbody>
+</table></div>
+<p class="legend"><span class="gx on"></span> principal activity<span class="lgap"></span><span class="gx soft"></span> secondary or continuing activity</p>
+<p class="tcap"><span class="tnum">Table 3</span>Phase milestones and deliverables</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Months</th>
+<th>Objective served</th>
+<th>Milestone deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I. Literature and data assembly</td>
+<td>Aug – Sep</td>
+<td>O1</td>
+<td>Documented search protocol; downloaded record set with provenance</td>
+</tr>
+<tr>
+<td>II. Harmonisation and quality control</td>
+<td>Sep – Nov</td>
+<td>O1</td>
+<td>Harmonised ML-ready dataset and published taxonomic lookup table</td>
+</tr>
+<tr>
+<td>III. Exploratory analysis and masking design</td>
+<td>Oct – Dec</td>
+<td>O1, O2</td>
+<td>EDA report; missingness diagnosis; validated masking framework</td>
+</tr>
+<tr>
+<td>IV. Model development</td>
+<td>Nov – Jan</td>
+<td>O2</td>
+<td>Trained baseline, LR, RF, SVR and XGBoost models with tuning records</td>
+</tr>
+<tr>
+<td>V. Validation programme</td>
+<td>Dec – Feb</td>
+<td>O2, O3, O4</td>
+<td>Benchmark tables; generalisation-gap results; single external test result</td>
+</tr>
+<tr>
+<td>VI. Interpretation</td>
+<td>Jan – Mar</td>
+<td>O4</td>
+<td>Feature-importance and error analysis; downstream-inference comparison</td>
+</tr>
+<tr>
+<td>VII. Writing and submission</td>
+<td>Oct – Mar</td>
+<td>All</td>
+<td>Thesis draft, revision, final submission and defence</td>
+</tr>
+</tbody>
+</table></div>
+<p>The schedule assumes that the external test datasets become available no later than the start of Month 5 (December), since the external evaluation cannot begin until model development is complete and frozen. If they are delayed beyond that point, the contingency described in Section 6.1 will be invoked at that time rather than at the end of the programme, so that Objective 4 remains achievable within the eight-month period.</p>
+<hr />
+</section>
+<section class="sec" id="sec-8"><h2><span class="secnum" aria-hidden="true">8</span><span class="sectitle">References</span></h2>
+<p>Aitchison, J. (1986) <em>The Statistical Analysis of Compositional Data</em>. London: Chapman and Hall.</p>
+<p>Bhaumik, A.K., Gupta, A.K. and Thomas, E. (2011) 'Late Neogene benthic foraminifera and stable carbon isotope record of the Blake Outer Ridge', <em>PANGAEA</em>. Available at: https://doi.org/10.1594/PANGAEA.775833.</p>
+<p>Breiman, L. (2001) 'Random forests', <em>Machine Learning</em>, 45(1), pp. 5–32.</p>
+<p>Chaisson, W.P., Poli, M.-S. and Thunell, R.C. (2002) 'Stable isotope record and composition of planktonic foraminifera from ODP Site 172-1056', <em>PANGAEA</em>. Available at: https://doi.org/10.1594/PANGAEA.741050.</p>
+<p>Chen, T. and Guestrin, C. (2016) 'XGBoost: a scalable tree boosting system', in <em>Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em>. New York: ACM, pp. 785–794.</p>
+<p>Diepenbroek, M., Grobe, H., Reinke, M., Schindler, U., Schlitzer, R., Sieger, R. and Wefer, G. (2002) 'PANGAEA — an information system for environmental sciences', <em>Computers &amp; Geosciences</em>, 28(10), pp. 1201–1212.</p>
+<p>Hemleben, C., Spindler, M. and Anderson, O.R. (1989) <em>Modern Planktonic Foraminifera</em>. New York: Springer-Verlag.</p>
+<p>Imbrie, J. and Kipp, N.G. (1971) 'A new micropaleontological method for quantitative paleoclimatology: application to a late Pleistocene Caribbean core', in Turekian, K.K. (ed.) <em>The Late Cenozoic Glacial Ages</em>. New Haven: Yale University Press, pp. 71–181.</p>
+<p>Johansen, T.H. and Sørensen, S.A. (2020) 'Towards detection and classification of microscopic foraminifera using transfer learning', <em>arXiv preprint</em> arXiv:2001.04782.</p>
+<p>Johansen, T.H., Sørensen, S.A., Møllersen, K. and Godtliebsen, F. (2021) 'Instance segmentation of microscopic foraminifera', <em>arXiv preprint</em> arXiv:2105.14191.</p>
+<p>Karaderi, T. <em>et al.</em> (2021) 'Visual microfossil identification via deep metric learning', <em>arXiv preprint</em> arXiv:2112.09490.</p>
+<p>Kučera, M. (2007) 'Planktonic foraminifera as tracers of past oceanic environments', in Hillaire-Marcel, C. and de Vernal, A. (eds.) <em>Proxies in Late Cenozoic Paleoceanography</em>. Developments in Marine Geology, vol. 1. Amsterdam: Elsevier, pp. 213–262.</p>
+<p>Little, R.J.A. and Rubin, D.B. (2019) <em>Statistical Analysis with Missing Data</em>. 3rd edn. Hoboken, NJ: Wiley.</p>
+<p>Lundberg, S.M. and Lee, S.-I. (2017) 'A unified approach to interpreting model predictions', in <em>Advances in Neural Information Processing Systems 30</em>, pp. 4765–4774.</p>
+<p>Lutz, B.P. (2011) '(Appendix A5) Planktonic foraminifera of ODP Hole 172-1063A', <em>PANGAEA</em>. Available at: https://doi.org/10.1594/PANGAEA.774582.</p>
+<p>Nishi, H., Norris, R.D. and Okada, H. (2000) 'Relative abundance of planktonic foraminifers in ODP Hole 164-997A sediments', <em>PANGAEA</em>. Available at: https://doi.org/10.1594/PANGAEA.804482.</p>
+<p>Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M. and Duchesnay, É. (2011) 'Scikit-learn: machine learning in Python', <em>Journal of Machine Learning Research</em>, 12, pp. 2825–2830.</p>
+<p>Roberts, D.R., Bahn, V., Ciuti, S., Boyce, M.S., Elith, J., Guillera-Arroita, G., Hauenstein, S., Lahoz-Monfort, J.J., Schröder, B., Thuiller, W., Warton, D.I., Wintle, B.A., Hartig, F. and Dormann, C.F. (2017) 'Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure', <em>Ecography</em>, 40(8), pp. 913–929.</p>
+<p>Rubin, D.B. (1976) 'Inference and missing data', <em>Biometrika</em>, 63(3), pp. 581–592.</p>
+<p>Smola, A.J. and Schölkopf, B. (2004) 'A tutorial on support vector regression', <em>Statistics and Computing</em>, 14(3), pp. 199–222.</p>
+<p>Stekhoven, D.J. and Bühlmann, P. (2012) 'MissForest — non-parametric missing value imputation for mixed-type data', <em>Bioinformatics</em>, 28(1), pp. 112–118.</p>
+<p>van Buuren, S. and Groothuis-Oudshoorn, K. (2011) 'mice: multivariate imputation by chained equations in R', <em>Journal of Statistical Software</em>, 45(3), pp. 1–67.</p>
+</section>
+      <footer class="foot">Research proposal report · prepared from the proposal seminar deck and its accompanying analysis document.</footer>
+    </article>
+  </div>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.rail a'));
+  if(!links.length || !('IntersectionObserver' in window)) return;
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var seen = {};
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ seen[e.target.id] = e.isIntersecting; });
+    var current = null;
+    Object.keys(map).forEach(function(id){ if(seen[id] && !current) current = id; });
+    links.forEach(function(a){ a.classList.remove('active'); });
+    if(current && map[current]) map[current].classList.add('active');
+  }, {rootMargin:'-10% 0px -70% 0px'});
+  document.querySelectorAll('section.sec').forEach(function(s){ io.observe(s); });
+})();
+</script>
